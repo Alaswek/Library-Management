@@ -52,5 +52,21 @@ namespace LibraryManagement.Views
         {
             this.WindowState = WindowState.Minimized;
         }
+<<<<<<< Updated upstream
+=======
+        
+        // Gestionare Focus Username
+        private void Username_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (usernameBox.Text == "Username")
+                usernameBox.Text = "";
+        }
+
+        private void Username_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(usernameBox.Text))
+                usernameBox.Text = "Username";
+        }
+>>>>>>> Stashed changes
     }
 }
