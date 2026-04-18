@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using LibraryManagement.Models;
+
 namespace LibraryManagement.ViewModels
 {
     public class Login_ViewModel : ViewModelBase
@@ -17,14 +18,14 @@ namespace LibraryManagement.ViewModels
         private string username;
         public string Username
         {
-            get => username;
+            get { return username; }
             set { username = value; OnPropertyChanged(); }
         }
 
         private string password;
         public string Password
         {
-            get => password;
+            get { return password; }
             set { password = value; OnPropertyChanged(); }
         }
 
@@ -38,7 +39,7 @@ namespace LibraryManagement.ViewModels
         private Model_User currentUser;
         public Model_User CurrentUser
         {
-            get => currentUser;
+            get { return currentUser; }
             set { currentUser = value; OnPropertyChanged(); }
         }
 
@@ -46,12 +47,7 @@ namespace LibraryManagement.ViewModels
 
         public Login_ViewModel()
         {
-            Login_command = new RelayCommand(param =>
-            {
-                var passwordBox = param as System.Windows.Controls.PasswordBox;
-                this.Password = passwordBox?.Password;
-                DoLogin();
-            });
+            Login_command = new RelayCommand(_ => DoLogin());
         }
 
 
@@ -82,15 +78,15 @@ namespace LibraryManagement.ViewModels
                     Application_MainWindow mainWin = new Application_MainWindow(CurrentUser);
                     mainWin.Show();
 
-                    // Închide fereastra corectă (LoginApp_Window)
-                    Application.Current.Windows.OfType<LoginApp_Window>().FirstOrDefault()?.Close();
+                    // Închide fereastra corectă (LoginAppl_Window)
+                    Application.Current.Windows.OfType<LoginAppl_Window>().FirstOrDefault()?.Close();
                 }
                 catch (Exception ex)
                 {
-                    Show_ErrorMessage = "Eroare DB: " + ex.Message;
+                    MessageBox.Show("Eroare DB: " + ex.Message);
                 }
             }
-           
+
         }
 
     }

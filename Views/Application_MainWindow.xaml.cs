@@ -26,11 +26,13 @@ namespace LibraryManagement.Views
             InitializeComponent();
             if (user.Role.ToLower() == "administrator")
             {
-                MainContentArea.Content = new Admin_UserController();
+                // TASK:
+                // incarcam dinamic in Application_MainWindow acel usercontroller dashboard pentru administrator
             }
             else if (user.Role.ToLower() == "librarian")
             {
-                MainContentArea.Content = new Librarian_UserController();
+                // TASK:
+                // incarcam dinamic in Application_MainWindow acel usercontroller dashboard pentru librarian
             }
         }
     }

@@ -16,16 +16,16 @@ using System.Windows.Shapes;
 namespace LibraryManagement.Views
 {
     /// <summary>
-    /// Interaction logic for LoginApp_Window.xaml
+    /// Interaction logic for LoginAppl_Window.xaml
     /// </summary>
-    public partial class LoginApp_Window : Window
+    public partial class LoginAppl_Window : Window
     {
-        public LoginApp_Window()
+        public LoginAppl_Window()
         {
             InitializeComponent();
+            this.DataContext = new Login_ViewModel();
         }
 
-        // Permite mutarea ferestrei cu mouse-ul (tragere de bara de sus)
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -52,21 +52,6 @@ namespace LibraryManagement.Views
         {
             this.WindowState = WindowState.Minimized;
         }
-<<<<<<< Updated upstream
-=======
-        
-        // Gestionare Focus Username
-        private void Username_GotFocus(object sender, RoutedEventArgs e)
-        {
-            if (usernameBox.Text == "Username")
-                usernameBox.Text = "";
-        }
 
-        private void Username_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(usernameBox.Text))
-                usernameBox.Text = "Username";
-        }
->>>>>>> Stashed changes
     }
 }
