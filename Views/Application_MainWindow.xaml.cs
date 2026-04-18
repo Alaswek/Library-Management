@@ -30,6 +30,7 @@ namespace LibraryManagement.Views
             }
             else if (user.Role.ToLower() == "librarian")
             {
+                var librarian = user as Model_Librarian;
                 MainContentArea.Content = new Librarian_UserController();
             }
         }
