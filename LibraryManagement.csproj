@@ -91,6 +91,9 @@
     <Compile Include="Models\Model_User.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml.cs">
+      <DependentUpon>Librarian_UserController.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Login_ViewModel.cs" />
     <Compile Include="Views\Application_MainWindow.xaml.cs">
       <DependentUpon>Application_MainWindow.xaml</DependentUpon>
@@ -127,6 +130,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Application_MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -149,12 +156,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Baza_de_date.mdf">
+    <Content Include="Data\Database_item\Database.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Baza_de_date_log.ldf">
+    <Content Include="Data\Database_item\Database_log.ldf">
+      <DependentUpon>Database.mdf</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>Baza_de_date.mdf</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

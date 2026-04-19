@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+
 
 namespace LibraryManagement.Models
 {
+    [Table("Users")]
     public class Model_User
     {
+        [Key]
         private int _id;
         public int Id
         {

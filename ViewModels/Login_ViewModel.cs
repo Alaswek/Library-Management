@@ -73,12 +73,17 @@ namespace LibraryManagement.ViewModels
                         return;
                     }
 
-                    // Succes
+                    // ToDo:
+                    // La login verificam daca "user.Role" este administrator sau librarian
+                    // daca e administrator atunci randam in Application_MainWindow un usercontroller pentru admin,
+                    // daca e librarian atunci randam un usercontroller pentru librarian
+
+                    // Succes (will be deleted from here)
                     CurrentUser = user;
                     Application_MainWindow mainWin = new Application_MainWindow(CurrentUser);
                     mainWin.Show();
 
-                    // Închide fereastra corectă (LoginAppl_Window)
+                    // Închide fereastra corectă (LoginAppl_Window) dupa login
                     Application.Current.Windows.OfType<LoginAppl_Window>().FirstOrDefault()?.Close();
                 }
                 catch (Exception ex)

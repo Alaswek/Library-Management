@@ -9,3 +9,5 @@ obj/
 *.dll
 *.xml
 *.db
+
+!Data/Database_item/Database.mdf

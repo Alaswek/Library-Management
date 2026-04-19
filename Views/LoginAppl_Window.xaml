@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vmdtc="clr-namespace:LibraryManagement.ViewModels"
         mc:Ignorable="d"
-        Title="LoginApp_Window" 
+        Title="LoginAppl_Window" 
         Height="450" Width="700" 
         WindowStartupLocation="CenterScreen" 
         WindowStyle="None" 
