@@ -1,18 +1,7 @@
-﻿using LibraryManagement.Models;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LibraryManagement.Models;
+using LibraryManagement.UserControllers.Admin_UserControllers;
+using LibraryManagement.UserControllers.Librarian_UserControllers;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace LibraryManagement.Views
 {
@@ -24,15 +13,21 @@ namespace LibraryManagement.Views
         public Application_MainWindow(Model_User user)
         {
             InitializeComponent();
-            if (user.Role.ToLower() == "administrator")
+
+            string role = (user.Role ?? string.Empty).Trim().ToLowerInvariant();
+
+            if (role == "administrator" || role == "admin")
             {
-                // TASK:
-                // incarcam dinamic in Application_MainWindow acel usercontroller dashboard pentru administrator
+                MainContentArea.Content = new Admin_UserController(user);
             }
-            else if (user.Role.ToLower() == "librarian")
+            else if (role == "librarian")
             {
-                // TASK:
-                // incarcam dinamic in Application_MainWindow acel usercontroller dashboard pentru librarian
+                MainContentArea.Content = new Librarian_UserController();
+            }
+            else
+            {
+                MessageBox.Show("Unknown user role: " + user.Role, "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Close();
             }
         }
     }

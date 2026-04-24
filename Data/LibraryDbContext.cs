@@ -24,6 +24,7 @@ namespace LibraryManagement.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Model_User>().ToTable("Users");
+            modelBuilder.Entity<Model_Library>().ToTable("Libraries");
 
             modelBuilder.Ignore<Model_Librarian>();
             modelBuilder.Ignore<Model_Administrator>();
@@ -35,10 +36,28 @@ namespace LibraryManagement.Data
 
 
         public LibraryDbContext() : base("name=LibraryDb") 
-        { 
+        {
+            EnsureSchema();
         }
 
 
         public DbSet<Model_User> Users { get; set;  }
+        public DbSet<Model_Library> Libraries { get; set; }
+
+        private void EnsureSchema()
+        {
+            Database.ExecuteSqlCommand(
+                @"IF OBJECT_ID(N'[dbo].[Libraries]', N'U') IS NULL
+                  BEGIN
+                      CREATE TABLE [dbo].[Libraries]
+                      (
+                          [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                          [Name] NVARCHAR(200) NOT NULL,
+                          [Address] NVARCHAR(300) NOT NULL,
+                          [AvailableSeats] INT NOT NULL CONSTRAINT [DF_Libraries_AvailableSeats] DEFAULT 0,
+                          [IsActive] BIT NOT NULL CONSTRAINT [DF_Libraries_IsActive] DEFAULT 1
+                      )
+                  END");
+        }
     }
 }
