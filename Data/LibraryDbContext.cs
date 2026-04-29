@@ -54,9 +54,23 @@ namespace LibraryManagement.Data
                           [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
                           [Name] NVARCHAR(200) NOT NULL,
                           [Address] NVARCHAR(300) NOT NULL,
-                          [AvailableSeats] INT NOT NULL CONSTRAINT [DF_Libraries_AvailableSeats] DEFAULT 0,
-                          [IsActive] BIT NOT NULL CONSTRAINT [DF_Libraries_IsActive] DEFAULT 1
+                          [IsOpen] BIT NOT NULL CONSTRAINT [DF_Libraries_IsOpen] DEFAULT 1
                       )
+                  END
+                  ELSE
+                  BEGIN
+                      IF COL_LENGTH(N'dbo.Libraries', N'IsOpen') IS NULL
+                      BEGIN
+                          IF COL_LENGTH(N'dbo.Libraries', N'IsActive') IS NOT NULL
+                          BEGIN
+                              EXEC sp_rename N'[dbo].[Libraries].[IsActive]', N'IsOpen', N'COLUMN'
+                          END
+                          ELSE
+                          BEGIN
+                              ALTER TABLE [dbo].[Libraries]
+                              ADD [IsOpen] BIT NOT NULL CONSTRAINT [DF_Libraries_IsOpen] DEFAULT 1
+                          END
+                      END
                   END");
         }
     }

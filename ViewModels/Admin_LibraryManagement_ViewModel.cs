@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace LibraryManagement.ViewModels
 {
-    public class Admin_LibraryManagement_ViewModel : ViewModelBase
+    public class AdminLibrariesViewModel : ViewModelBase
     {
         private readonly Model_User _currentAdmin;
         private ObservableCollection<Model_Library> _libraries;
@@ -18,22 +18,19 @@ namespace LibraryManagement.ViewModels
         private int _editingLibraryId;
         private string _libraryName;
         private string _libraryAddress;
-        private string _availableSeatsText;
-        private bool _isActive;
+        private bool _isOpen;
         private string _statusMessage;
 
-        public Admin_LibraryManagement_ViewModel(Model_User currentAdmin)
+        public AdminLibrariesViewModel(Model_User currentAdmin)
         {
             _currentAdmin = currentAdmin;
             _libraries = new ObservableCollection<Model_Library>();
-            _availableSeatsText = "0";
-            _isActive = true;
 
-            LoadLibrariesCommand = new RelayCommand(_ => LoadLibraries());
             SaveLibraryCommand = new RelayCommand(_ => SaveLibrary());
             EditSelectedLibraryCommand = new RelayCommand(_ => StartEditingSelectedLibrary(), _ => SelectedLibrary != null);
             ClearFormCommand = new RelayCommand(_ => ResetForm());
 
+            ResetForm();
             LoadLibraries();
         }
 
@@ -50,7 +47,7 @@ namespace LibraryManagement.ViewModels
                 if (SetProperty(ref _libraries, value))
                 {
                     OnPropertyChanged(nameof(TotalLibraries));
-                    OnPropertyChanged(nameof(ActiveLibraries));
+                    OnPropertyChanged(nameof(OpenLibraries));
                 }
             }
         }
@@ -73,16 +70,10 @@ namespace LibraryManagement.ViewModels
             set { SetProperty(ref _libraryAddress, value); }
         }
 
-        public string AvailableSeatsText
+        public bool IsOpen
         {
-            get { return _availableSeatsText; }
-            set { SetProperty(ref _availableSeatsText, value); }
-        }
-
-        public bool IsActive
-        {
-            get { return _isActive; }
-            set { SetProperty(ref _isActive, value); }
+            get { return _isOpen; }
+            set { SetProperty(ref _isOpen, value); }
         }
 
         public string StatusMessage
@@ -106,12 +97,11 @@ namespace LibraryManagement.ViewModels
             get { return Libraries.Count; }
         }
 
-        public int ActiveLibraries
+        public int OpenLibraries
         {
-            get { return Libraries.Count(library => library.IsActive); }
+            get { return Libraries.Count(library => library.IsOpen); }
         }
 
-        public ICommand LoadLibrariesCommand { get; private set; }
         public ICommand SaveLibraryCommand { get; private set; }
         public ICommand EditSelectedLibraryCommand { get; private set; }
         public ICommand ClearFormCommand { get; private set; }
@@ -141,8 +131,6 @@ namespace LibraryManagement.ViewModels
 
         private void SaveLibrary()
         {
-            int availableSeats;
-
             if (string.IsNullOrWhiteSpace(LibraryName))
             {
                 StatusMessage = "Library name is required.";
@@ -152,12 +140,6 @@ namespace LibraryManagement.ViewModels
             if (string.IsNullOrWhiteSpace(LibraryAddress))
             {
                 StatusMessage = "Library address is required.";
-                return;
-            }
-
-            if (!int.TryParse(AvailableSeatsText, out availableSeats) || availableSeats < 0)
-            {
-                StatusMessage = "Available seats must be a non-negative number.";
                 return;
             }
 
@@ -184,8 +166,7 @@ namespace LibraryManagement.ViewModels
 
                     library.Name = LibraryName.Trim();
                     library.Address = LibraryAddress.Trim();
-                    library.AvailableSeats = availableSeats;
-                    library.IsActive = IsActive;
+                    library.IsOpen = IsOpen;
 
                     db.SaveChanges();
                 }
@@ -215,8 +196,7 @@ namespace LibraryManagement.ViewModels
             _editingLibraryId = SelectedLibrary.Id;
             LibraryName = SelectedLibrary.Name;
             LibraryAddress = SelectedLibrary.Address;
-            AvailableSeatsText = SelectedLibrary.AvailableSeats.ToString();
-            IsActive = SelectedLibrary.IsActive;
+            IsOpen = SelectedLibrary.IsOpen;
             StatusMessage = string.Format("Editing library: {0}", SelectedLibrary.Name);
             OnPropertyChanged(nameof(IsEditMode));
             OnPropertyChanged(nameof(FormTitle));
@@ -227,8 +207,7 @@ namespace LibraryManagement.ViewModels
             _editingLibraryId = 0;
             LibraryName = string.Empty;
             LibraryAddress = string.Empty;
-            AvailableSeatsText = "0";
-            IsActive = true;
+            IsOpen = true;
             OnPropertyChanged(nameof(IsEditMode));
             OnPropertyChanged(nameof(FormTitle));
         }

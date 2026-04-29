@@ -9,7 +9,7 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
         public Admin_UserController(Model_User currentUser)
         {
             InitializeComponent();
-            DataContext = new Admin_LibraryManagement_ViewModel(currentUser);
+            DataContext = new AdminLibrariesViewModel(currentUser);
         }
     }
 }
