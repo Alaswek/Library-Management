@@ -87,13 +87,19 @@
     </Compile>
     <Compile Include="Data\LibraryDbContext.cs" />
     <Compile Include="Models\Model_Administrator.cs" />
+    <Compile Include="Models\Model_Book.cs" />
     <Compile Include="Models\Model_Librarian.cs" />
+    <Compile Include="Models\Model_Library.cs" />
     <Compile Include="Models\Model_User.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="UserControllers\Admin_UserControllers\Admin_UserController.xaml.cs">
+      <DependentUpon>Admin_UserController.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml.cs">
       <DependentUpon>Librarian_UserController.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\Admin_LibraryManagement_ViewModel.cs" />
     <Compile Include="ViewModels\Login_ViewModel.cs" />
     <Compile Include="Views\Application_MainWindow.xaml.cs">
       <DependentUpon>Application_MainWindow.xaml</DependentUpon>
@@ -130,6 +136,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UserControllers\Admin_UserControllers\Admin_UserController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,9 +166,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\Database_item\Database.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Data\Database_item\Database.mdf" />
     <Content Include="Data\Database_item\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
