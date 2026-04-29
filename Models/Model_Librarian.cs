@@ -16,5 +16,12 @@ namespace LibraryManagement.Models
             get { return _library_id; }
             set { _library_id = value; }
         }
+
+        private string _library_name;
+        public string LibraryName
+        {
+            get { return _library_name; }
+            set { _library_name = value; }
+        }
     }
 }

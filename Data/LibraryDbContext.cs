@@ -71,6 +71,15 @@ namespace LibraryManagement.Data
                               ADD [IsOpen] BIT NOT NULL CONSTRAINT [DF_Libraries_IsOpen] DEFAULT 1
                           END
                       END
+                  END
+
+                  IF OBJECT_ID(N'[dbo].[Users]', N'U') IS NOT NULL
+                  BEGIN
+                      IF COL_LENGTH(N'dbo.Users', N'Library_ID') IS NULL
+                      BEGIN
+                          ALTER TABLE [dbo].[Users]
+                          ADD [Library_ID] INT NULL
+                      END
                   END");
         }
     }

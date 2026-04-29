@@ -29,6 +29,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Border Grid.Column="0" Margin="0,0,8,0" Padding="16" Background="White" CornerRadius="10">
@@ -38,103 +40,235 @@
                 </StackPanel>
             </Border>
 
-            <Border Grid.Column="1" Margin="8,0,0,0" Padding="16" Background="White" CornerRadius="10">
+            <Border Grid.Column="1" Margin="8,0,8,0" Padding="16" Background="White" CornerRadius="10">
                 <StackPanel>
                     <TextBlock Text="Open Libraries" FontSize="13" Foreground="#58708A"/>
                     <TextBlock Text="{Binding OpenLibraries}" FontSize="28" FontWeight="Bold" Foreground="#1F3A5F"/>
                 </StackPanel>
             </Border>
-        </Grid>
 
-        <Grid Grid.Row="2" Margin="18,0,18,18">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.35*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Grid.Column="0" Margin="0,0,10,0" Padding="18" Background="White" CornerRadius="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <DockPanel Grid.Row="0" Margin="0,0,0,14">
-                        <TextBlock Text="Libraries"
-                                   FontSize="20"
-                                   FontWeight="SemiBold"
-                                   Foreground="#1F3A5F"/>
-                    </DockPanel>
-
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Libraries}"
-                              SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="1.3*"/>
-                            <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="1.7*"/>
-                            <DataGridCheckBoxColumn Header="Open" Binding="{Binding IsOpen}" Width="0.6*"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,0">
-                        <Button Content="Edit Selected"
-                                Width="120"
-                                Height="34"
-                                Margin="0,0,10,0"
-                                Command="{Binding EditSelectedLibraryCommand}"/>
-                        <TextBlock Text="{Binding StatusMessage}"
-                                   VerticalAlignment="Center"
-                                   Foreground="#58708A"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Grid>
+            <Border Grid.Column="2" Margin="8,0,8,0" Padding="16" Background="White" CornerRadius="10">
+                <StackPanel>
+                    <TextBlock Text="Total Librarians" FontSize="13" Foreground="#58708A"/>
+                    <TextBlock Text="{Binding TotalLibrarians}" FontSize="28" FontWeight="Bold" Foreground="#1F3A5F"/>
+                </StackPanel>
             </Border>
 
-            <Border Grid.Column="1" Margin="10,0,0,0" Padding="18" Background="White" CornerRadius="10">
+            <Border Grid.Column="3" Margin="8,0,0,0" Padding="16" Background="White" CornerRadius="10">
                 <StackPanel>
-                    <TextBlock Text="{Binding FormTitle}"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="#1F3A5F"/>
-                    <TextBlock Text="Use this form to create a new library or update an existing one."
-                               Margin="0,4,0,18"
-                               Foreground="#58708A"
-                               TextWrapping="Wrap"/>
-
-                    <TextBlock Text="Library Name" Margin="0,0,0,6"/>
-                    <TextBox Text="{Binding LibraryName, UpdateSourceTrigger=PropertyChanged}"
-                             Height="34"
-                             Margin="0,0,0,14"/>
-
-                    <TextBlock Text="Address" Margin="0,0,0,6"/>
-                    <TextBox Text="{Binding LibraryAddress, UpdateSourceTrigger=PropertyChanged}"
-                             Height="34"
-                             Margin="0,0,0,14"/>
-
-                    <CheckBox Content="Library is open"
-                              IsChecked="{Binding IsOpen}"
-                              Margin="0,0,0,20"/>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Save"
-                                Width="110"
-                                Height="36"
-                                Margin="0,0,10,0"
-                                Command="{Binding SaveLibraryCommand}"/>
-                        <Button Content="Clear"
-                                Width="110"
-                                Height="36"
-                                Command="{Binding ClearFormCommand}"/>
-                    </StackPanel>
+                    <TextBlock Text="Active Librarians" FontSize="13" Foreground="#58708A"/>
+                    <TextBlock Text="{Binding ActiveLibrarians}" FontSize="28" FontWeight="Bold" Foreground="#1F3A5F"/>
                 </StackPanel>
             </Border>
         </Grid>
+
+        <TabControl Grid.Row="2" Margin="18,0,18,18">
+            <TabItem Header="Libraries">
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.35*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Margin="0,0,10,0" Padding="18" Background="White" CornerRadius="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,14">
+                                <TextBlock Text="Libraries"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1F3A5F"/>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      ItemsSource="{Binding Libraries}"
+                                      SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="1.3*"/>
+                                    <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="1.7*"/>
+                                    <DataGridCheckBoxColumn Header="Open" Binding="{Binding IsOpen}" Width="0.6*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,0">
+                                <Button Content="Edit Selected"
+                                        Width="120"
+                                        Height="34"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding EditSelectedLibraryCommand}"/>
+                                <Button Content="Delete Selected"
+                                        Width="120"
+                                        Height="34"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding DeleteSelectedLibraryCommand}"/>
+                                <TextBlock Text="{Binding LibraryStatusMessage}"
+                                           VerticalAlignment="Center"
+                                           Foreground="#58708A"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Margin="10,0,0,0" Padding="18" Background="White" CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Text="{Binding FormTitle}"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Foreground="#1F3A5F"/>
+                            <TextBlock Text="Use this form to create a new library or update an existing one."
+                                       Margin="0,4,0,18"
+                                       Foreground="#58708A"
+                                       TextWrapping="Wrap"/>
+
+                            <TextBlock Text="Library Name" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding LibraryName, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="34"
+                                     Margin="0,0,0,14"/>
+
+                            <TextBlock Text="Address" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding LibraryAddress, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="34"
+                                     Margin="0,0,0,14"/>
+
+                            <CheckBox Content="Library is open"
+                                      IsChecked="{Binding IsOpen}"
+                                      Margin="0,0,0,20"/>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Save"
+                                        Width="110"
+                                        Height="36"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding SaveLibraryCommand}"/>
+                                <Button Content="Clear"
+                                        Width="110"
+                                        Height="36"
+                                        Command="{Binding ClearFormCommand}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Librarians">
+                <Grid Margin="0,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.35*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Margin="0,0,10,0" Padding="18" Background="White" CornerRadius="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="0,0,0,14">
+                                <TextBlock Text="Librarian Accounts"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="#1F3A5F"/>
+                            </DockPanel>
+
+                            <DataGrid Grid.Row="1"
+                                      ItemsSource="{Binding Librarians}"
+                                      SelectedItem="{Binding SelectedLibrarian, Mode=TwoWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="Assigned Library" Binding="{Binding LibraryName}" Width="1.6*"/>
+                                    <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="0.6*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,0">
+                                <Button Content="Edit Selected"
+                                        Width="120"
+                                        Height="34"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding EditSelectedLibrarianCommand}"/>
+                                <Button Content="Delete Selected"
+                                        Width="120"
+                                        Height="34"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding DeleteSelectedLibrarianCommand}"/>
+                                <TextBlock Text="{Binding LibrarianStatusMessage}"
+                                           VerticalAlignment="Center"
+                                           Foreground="#58708A"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Column="1" Margin="10,0,0,0" Padding="18" Background="White" CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock Text="{Binding LibrarianFormTitle}"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       Foreground="#1F3A5F"/>
+                            <TextBlock Text="Use this form to create or update librarian accounts only."
+                                       Margin="0,4,0,18"
+                                       Foreground="#58708A"
+                                       TextWrapping="Wrap"/>
+
+                            <TextBlock Text="Username" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding LibrarianUsername, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="34"
+                                     Margin="0,0,0,14"/>
+
+                            <TextBlock Text="Password" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding LibrarianPassword, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="34"
+                                     Margin="0,0,0,14"/>
+
+                            <TextBlock Text="Assigned Library" Margin="0,0,0,6"/>
+                            <ComboBox ItemsSource="{Binding Libraries}"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="Id"
+                                      SelectedValue="{Binding SelectedLibrarianLibraryId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Height="34"
+                                      Margin="0,0,0,14"/>
+
+                            <CheckBox Content="Librarian account is active"
+                                      IsChecked="{Binding IsLibrarianActive}"
+                                      Margin="0,0,0,20"/>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Save"
+                                        Width="110"
+                                        Height="36"
+                                        Margin="0,0,10,0"
+                                        Command="{Binding SaveLibrarianCommand}"/>
+                                <Button Content="Clear"
+                                        Width="110"
+                                        Height="36"
+                                        Command="{Binding ClearLibrarianFormCommand}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
