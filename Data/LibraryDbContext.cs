@@ -25,6 +25,13 @@ namespace LibraryManagement.Data
         {
             modelBuilder.Entity<Model_User>().ToTable("Users");
             modelBuilder.Entity<Model_Library>().ToTable("Libraries");
+            modelBuilder.Entity<Model_Book>().ToTable("Books");
+
+            modelBuilder.Entity<Model_Book>()
+                .HasRequired(book => book.Library)
+                .WithMany(library => library.Books)
+                .HasForeignKey(book => book.LibraryId)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Ignore<Model_Librarian>();
             modelBuilder.Ignore<Model_Administrator>();
@@ -43,6 +50,7 @@ namespace LibraryManagement.Data
 
         public DbSet<Model_User> Users { get; set;  }
         public DbSet<Model_Library> Libraries { get; set; }
+        public DbSet<Model_Book> Books { get; set; }
 
         private void EnsureSchema()
         {
@@ -80,6 +88,21 @@ namespace LibraryManagement.Data
                           ALTER TABLE [dbo].[Users]
                           ADD [Library_ID] INT NULL
                       END
+                  END
+
+                  IF OBJECT_ID(N'[dbo].[Books]', N'U') IS NULL
+                  BEGIN
+                      CREATE TABLE [dbo].[Books]
+                      (
+                          [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                          [Title] NVARCHAR(200) NOT NULL,
+                          [Author] NVARCHAR(200) NOT NULL,
+                          [LibraryId] INT NOT NULL,
+                          [Quantity] INT NOT NULL CONSTRAINT [DF_Books_Quantity] DEFAULT 0,
+                          [AvailableQuantity] INT NOT NULL CONSTRAINT [DF_Books_AvailableQuantity] DEFAULT 0,
+                          [IsActive] BIT NOT NULL CONSTRAINT [DF_Books_IsActive] DEFAULT 1,
+                          CONSTRAINT [FK_Books_Libraries] FOREIGN KEY ([LibraryId]) REFERENCES [dbo].[Libraries]([Id])
+                      )
                   END");
         }
     }

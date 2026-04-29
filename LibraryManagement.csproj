@@ -87,6 +87,7 @@
     </Compile>
     <Compile Include="Data\LibraryDbContext.cs" />
     <Compile Include="Models\Model_Administrator.cs" />
+    <Compile Include="Models\Model_Book.cs" />
     <Compile Include="Models\Model_Librarian.cs" />
     <Compile Include="Models\Model_Library.cs" />
     <Compile Include="Models\Model_User.cs" />

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 using LibraryManagement.MVVM;
 
 namespace LibraryManagement.Models
@@ -11,6 +12,12 @@ namespace LibraryManagement.Models
         private string _name;
         private string _address;
         private bool _isOpen;
+        private ICollection<Model_Book> _books;
+
+        public Model_Library()
+        {
+            _books = new List<Model_Book>();
+        }
 
         [Key]
         public int Id
@@ -39,6 +46,12 @@ namespace LibraryManagement.Models
         {
             get { return _isOpen; }
             set { _isOpen = value; OnPropertyChanged(); }
+        }
+
+        public virtual ICollection<Model_Book> Books
+        {
+            get { return _books; }
+            set { _books = value; OnPropertyChanged(); }
         }
     }
 }
