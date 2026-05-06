@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.Models
 {
-    [NotMapped]
+    [Table("Librarians")] //Observatia 3 din pdf: Am sters NotMapped ala
     public class Model_Librarian : Model_User
     {
         private int _library_id;
@@ -22,6 +22,11 @@ namespace LibraryManagement.Models
         {
             get { return _library_name; }
             set { _library_name = value; }
+        }
+        [NotMapped]
+        public string LibraryName
+        {
+            get { return Library?.Name ?? string.Empty; }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LibraryManagement.Models
         private int _availableQuantity;
         private bool _isActive;
         private Model_Library _library;
-
+        //Rezolv observatia 4 din pdf ca sa aiba chestiile alea CHECK
         [Key]
         public int Id
         {
@@ -46,17 +46,30 @@ namespace LibraryManagement.Models
             set { _libraryId = value; OnPropertyChanged(); }
         }
 
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity cannot be negative")]
         public int Quantity
         {
             get { return _quantity; }
-            set { _quantity = value; OnPropertyChanged(); }
+            set
+            {
+                if (value < 0) throw new ValidationException("Quantity cannot be negative");
+                _quantity = value;
+                OnPropertyChanged();
+            }
         }
 
+        [Range(0, int.MaxValue, ErrorMessage = "Available quantity cannot be negative")]
         public int AvailableQuantity
         {
             get { return _availableQuantity; }
-            set { _availableQuantity = value; OnPropertyChanged(); }
+            set
+            {
+                if (value < 0) throw new ValidationException("Available quantity cannot be negative");
+                _availableQuantity = value;
+                OnPropertyChanged();
+            }
         }
+
 
         public bool IsActive
         {

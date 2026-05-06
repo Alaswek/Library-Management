@@ -28,7 +28,7 @@ namespace LibraryManagement.ViewModels
         private string _bookStatusMessage;
         private string _rentalStatusMessage;
 
-        public Librarian_BookViewModel(Model_User currentLibrarian)
+        public Librarian_LibraryManagement_ViewModel(Model_User currentLibrarian)
         {
             _currentLibrarian = currentLibrarian;
             _rentalDueDate = DateTime.Now.AddDays(14);
