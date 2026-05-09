@@ -521,9 +521,12 @@ namespace LibraryManagement.ViewModels
             _editingLibrarianId = SelectedLibrarian.Id;
             LibrarianUsername = SelectedLibrarian.Username;
             LibrarianPassword = SelectedLibrarian.Password;
-            SelectedLibrarianLibraryId = SelectedLibrarian.Library_ID;
+
+            SelectedLibrarianLibraryId = SelectedLibrarian.Library_ID ?? 0;
+
             IsLibrarianActive = SelectedLibrarian.IsActive;
             LibrarianStatusMessage = string.Format("Editing librarian account: {0}", SelectedLibrarian.Username);
+
             OnPropertyChanged(nameof(IsLibrarianEditMode));
             OnPropertyChanged(nameof(LibrarianFormTitle));
         }

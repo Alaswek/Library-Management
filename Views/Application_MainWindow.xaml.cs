@@ -22,11 +22,16 @@ namespace LibraryManagement.Views
             }
             else if (role == "librarian")
             {
-                MainContentArea.Content = new Librarian_UserController();
+                MainContentArea.Content = new Librarian_UserController(user);
             }
             else
             {
-                MessageBox.Show("Unknown user role: " + user.Role, "Login Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Unknown user role: " + user.Role,
+                    "Login Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
                 Close();
             }
         }

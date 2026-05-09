@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace LibraryManagement.Models
         private string _address;
         private bool _isOpen;
         private ICollection<Model_Book> _books;
+        private int _availableSeats;
 
         public Model_Library()
         {
@@ -53,8 +55,6 @@ namespace LibraryManagement.Models
             get { return _books; }
             set { _books = value; OnPropertyChanged(); }
         }
-        //L-am pus si aici pe asta ca e si in DB si acuma l-am vz
-        private int _availableSeats;
 
         [Range(0, int.MaxValue, ErrorMessage = "Available seats cannot be negative")]
         public int AvailableSeats
@@ -62,7 +62,9 @@ namespace LibraryManagement.Models
             get { return _availableSeats; }
             set
             {
-                if (value < 0) throw new ArgumentException("Available seats cannot be negative");
+                if (value < 0)
+                    throw new ArgumentException("Available seats cannot be negative");
+
                 _availableSeats = value;
                 OnPropertyChanged();
             }

@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using LibraryManagement.Models;
 using System.Data.Entity;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using LibraryManagement.Models;
 
 namespace LibraryManagement.Data
 {
     public class LibraryDbContext : DbContext
     {
-        // Disable database initialization
-        // This prevents Entity Framework from trying to create or modify the database schema
-        // since we are using an existing database with a specific structure.
         static LibraryDbContext()
         {
             Database.SetInitializer<LibraryDbContext>(null);
         }
+
+        public LibraryDbContext() : base("name=LibraryDb")
+        {
+            EnsureSchema();
+        }
+
+        public DbSet<Model_User> Users { get; set; }
+        public DbSet<Model_Library> Libraries { get; set; }
+        public DbSet<Model_Book> Books { get; set; }
+        public DbSet<Model_Member> Members { get; set; }
+        public DbSet<Model_Rental> Rentals { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -34,21 +35,17 @@ namespace LibraryManagement.Data
                 .HasForeignKey(book => book.LibraryId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<Model_User>()
+                .HasOptional(user => user.Library)
+                .WithMany()
+                .HasForeignKey(user => user.Library_ID)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Ignore<Model_Librarian>();
             modelBuilder.Ignore<Model_Administrator>();
+
             base.OnModelCreating(modelBuilder);
         }
-
-        public LibraryDbContext() : base("name=LibraryDb")
-        {
-            EnsureSchema();
-        }
-
-        public DbSet<Model_User> Users { get; set; }
-        public DbSet<Model_Library> Libraries { get; set; }
-        public DbSet<Model_Book> Books { get; set; }
-        public DbSet<Model_Member> Members { get; set; }
-        public DbSet<Model_Rental> Rentals { get; set; }
 
         private void EnsureSchema()
         {
@@ -80,23 +77,19 @@ BEGIN
         END
     END
 
-    -- Am pus AvailableSeats
     IF COL_LENGTH(N'dbo.Libraries', N'AvailableSeats') IS NULL
     BEGIN
         ALTER TABLE [dbo].[Libraries]
         ADD [AvailableSeats] INT NOT NULL CONSTRAINT [DF_Libraries_AvailableSeats] DEFAULT 0
     END
 
-    -- I-am dat si constrangere
     IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_Libraries_AvailableSeats_NonNegative')
     BEGIN
         ALTER TABLE [dbo].[Libraries]
         ADD CONSTRAINT [CK_Libraries_AvailableSeats_NonNegative] CHECK ([AvailableSeats] >= 0)
     END
 END
-                 
-/*Aici rezolv observatia 1 din acest fisier*/
-       -- CREATE USERS TABLE IF NOT EXISTS
+
 IF OBJECT_ID(N'[dbo].[Users]', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Users]
@@ -119,30 +112,27 @@ BEGIN
         ALTER TABLE [dbo].[Users]
         ADD [Library_ID] INT NULL
     END
-    
-    -- Am pus FK boss
+
     IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Users_Libraries')
     BEGIN
         ALTER TABLE [dbo].[Users]
         ADD CONSTRAINT [FK_Users_Libraries] FOREIGN KEY ([Library_ID]) REFERENCES [dbo].[Libraries]([Id])
     END
 
-    -- Am pus unique
     IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'UQ_Users_Username')
     BEGIN
         ALTER TABLE [dbo].[Users]
         ADD CONSTRAINT [UQ_Users_Username] UNIQUE ([Username])
     END
 
-    -- Am pus verificare de rol predefinit
     IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_Users_Role_Valid')
     BEGIN
         ALTER TABLE [dbo].[Users]
         ADD CONSTRAINT [CK_Users_Role_Valid] CHECK ([Role] IN ('Administrator', 'Librarian'))
     END
-END  
-       
-          IF OBJECT_ID(N'[dbo].[Books]', N'U') IS NULL
+END
+
+IF OBJECT_ID(N'[dbo].[Books]', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Books]
     (
@@ -160,19 +150,19 @@ BEGIN
 END
 ELSE
 BEGIN
-    --Observatia 3 rezolvata aici ca sa nu mai pot seta valori negative
     IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_Books_Quantity_NonNegative')
     BEGIN
-        ALTER TABLE [dbo].[Books] ADD CONSTRAINT [CK_Books_Quantity_NonNegative] CHECK ([Quantity] >= 0)
+        ALTER TABLE [dbo].[Books]
+        ADD CONSTRAINT [CK_Books_Quantity_NonNegative] CHECK ([Quantity] >= 0)
     END
 
     IF NOT EXISTS (SELECT * FROM sys.check_constraints WHERE name = 'CK_Books_AvailableQuantity_NonNegative')
     BEGIN
-        ALTER TABLE [dbo].[Books] ADD CONSTRAINT [CK_Books_AvailableQuantity_NonNegative] CHECK ([AvailableQuantity] >= 0)
+        ALTER TABLE [dbo].[Books]
+        ADD CONSTRAINT [CK_Books_AvailableQuantity_NonNegative] CHECK ([AvailableQuantity] >= 0)
     END
 END
 
-          -- CREATE MEMBERS TABLE IF NOT EXISTS
 IF OBJECT_ID(N'[dbo].[Members]', N'U') IS NULL
 BEGIN
     CREATE TABLE [dbo].[Members]
@@ -189,7 +179,6 @@ BEGIN
 END
 ELSE
 BEGIN
-    -- Am adaugat si aicia unique pentru Members.StudentId
     IF NOT EXISTS (SELECT * FROM sys.key_constraints WHERE name = 'UQ_Members_StudentId')
     BEGIN
         ALTER TABLE [dbo].[Members]
@@ -197,24 +186,23 @@ BEGIN
     END
 END
 
-          -- CREATE RENTALS TABLE IF NOT EXISTS
-          IF OBJECT_ID(N'[dbo].[Rentals]', N'U') IS NULL
-          BEGIN
-              CREATE TABLE [dbo].[Rentals]
-              (
-                  [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-                  [BookId] INT NOT NULL,
-                  [BookTitle] NVARCHAR(200) NOT NULL,
-                  [MemberId] INT NOT NULL,
-                  [MemberName] NVARCHAR(200) NOT NULL,
-                  [StudentId] NVARCHAR(50) NOT NULL,
-                  [RentalDate] DATETIME NOT NULL,
-                  [DueDate] DATETIME NOT NULL,
-                  [ReturnDate] DATETIME NULL,
-                  CONSTRAINT [FK_Rentals_Books] FOREIGN KEY ([BookId]) REFERENCES [dbo].[Books]([Id]),
-                  CONSTRAINT [FK_Rentals_Members] FOREIGN KEY ([MemberId]) REFERENCES [dbo].[Members]([Id])
-              )
-          END");
+IF OBJECT_ID(N'[dbo].[Rentals]', N'U') IS NULL
+BEGIN
+    CREATE TABLE [dbo].[Rentals]
+    (
+        [Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        [BookId] INT NOT NULL,
+        [BookTitle] NVARCHAR(200) NOT NULL,
+        [MemberId] INT NOT NULL,
+        [MemberName] NVARCHAR(200) NOT NULL,
+        [StudentId] NVARCHAR(50) NOT NULL,
+        [RentalDate] DATETIME NOT NULL,
+        [DueDate] DATETIME NOT NULL,
+        [ReturnDate] DATETIME NULL,
+        CONSTRAINT [FK_Rentals_Books] FOREIGN KEY ([BookId]) REFERENCES [dbo].[Books]([Id]),
+        CONSTRAINT [FK_Rentals_Members] FOREIGN KEY ([MemberId]) REFERENCES [dbo].[Members]([Id])
+    )
+END");
         }
     }
 }
