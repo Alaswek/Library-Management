@@ -79,6 +79,9 @@ namespace LibraryManagement.ViewModels
                     // daca e librarian atunci randam un usercontroller pentru librarian
 
                     // Succes (will be deleted from here)
+                    user.IsActive = true;
+                    db.SaveChanges();
+
                     CurrentUser = user;
                     Application_MainWindow mainWin = new Application_MainWindow(CurrentUser);
                     mainWin.Show();

@@ -1,6 +1,8 @@
+using LibraryManagement.Data;
 using LibraryManagement.Models;
 using LibraryManagement.UserControllers.Admin_UserControllers;
 using LibraryManagement.UserControllers.Librarian_UserControllers;
+using System.ComponentModel;
 using System.Windows;
 
 namespace LibraryManagement.Views
@@ -10,9 +12,12 @@ namespace LibraryManagement.Views
     /// </summary>
     public partial class Application_MainWindow : Window
     {
+        private Model_User _currentUser;
         public Application_MainWindow(Model_User user)
         {
             InitializeComponent();
+
+            _currentUser = user;
 
             string role = (user.Role ?? string.Empty).Trim().ToLowerInvariant();
 
@@ -33,6 +38,22 @@ namespace LibraryManagement.Views
                     MessageBoxImage.Warning);
 
                 Close();
+            }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            using (var db = new LibraryDbContext())
+            {
+                var user = db.Users.Find(_currentUser.Id);
+
+                if (user != null)
+                {
+                    user.IsActive = false;
+                    db.SaveChanges();
+                }
             }
         }
     }
