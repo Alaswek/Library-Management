@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using LibraryManagement.MVVM;
+using System.Linq;
 
 namespace LibraryManagement.Models
 {
