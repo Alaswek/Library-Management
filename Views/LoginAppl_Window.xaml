@@ -3,91 +3,205 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vmdtc="clr-namespace:LibraryManagement.ViewModels"
         mc:Ignorable="d"
-        Title="LoginAppl_Window" 
-        Height="450" Width="700" 
-        WindowStartupLocation="CenterScreen" 
-        WindowStyle="None" 
-        AllowsTransparency="True" 
+        Title="Login"
+        Height="520"
+        Width="820"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
         Background="Transparent">
 
-    <Window.DataContext>
-        <vmdtc:Login_ViewModel/>
-    </Window.DataContext>
+    <Grid MouseDown="Border_MouseDown"
+          Background="Transparent">
 
-    <Grid MouseDown="Border_MouseDown">
-        <Border Background="White" 
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Center" 
-                CornerRadius="20" 
-                Width="550" 
-                Height="Auto" 
-                Padding="0,0,0,30">
+        <Border Background="#1E1E1E"
+                CornerRadius="18"
+                Width="760"
+                Height="460"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+
             <Border.Effect>
-                <DropShadowEffect BlurRadius="15" Direction="270" ShadowDepth="2" Opacity="0.1"/>
+                <DropShadowEffect BlurRadius="25"
+                                  Direction="270"
+                                  ShadowDepth="4"
+                                  Opacity="0.35"/>
             </Border.Effect>
 
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                <DockPanel Grid.Row="0" LastChildFill="False" Margin="15,10,15,0">
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <Button x:Name="btnMinimize" Width="35" Height="35" Background="Transparent" BorderThickness="0" Click="btnMinimize_Click">
-                            <Rectangle Width="12" Height="2" Fill="#333" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        </Button>
+                <!-- LEFT SIDE -->
+                <Border Grid.Column="0"
+                        Background="#252526"
+                        CornerRadius="18,0,0,18"
+                        Padding="30">
 
-                        <Button x:Name="btnMaximize" Content="☐" Width="35" Height="35" Background="Transparent" Foreground="#333" BorderThickness="0" Click="btnMaximize_Click" VerticalContentAlignment="Center" FontSize="16"/>
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="LIBRARY"
+                                       Foreground="#3498DB"
+                                       FontSize="34"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"/>
 
-                        <Button x:Name="btnClose" Content="✕" Width="35" Height="35" Background="Transparent" Foreground="#333" BorderThickness="0" Click="btnClose_Click" VerticalContentAlignment="Center" FontSize="16"/>
-                    </StackPanel>
-                </DockPanel>
+                            <TextBlock Text="MANAGEMENT"
+                                       Foreground="White"
+                                       FontSize="24"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,5,0,0"/>
 
-                <StackPanel Grid.Row="1" Margin="60,10,60,10">
-                    <TextBlock Text="Login" 
-                               FontSize="45" 
-                               FontWeight="Bold" 
-                               HorizontalAlignment="Center" 
-                               Margin="0,10,0,30" 
-                               Foreground="#4A90E2"/>
+                            <Rectangle Height="2"
+                                       Width="120"
+                                       Fill="#3498DB"
+                                       Margin="0,25,0,25"/>
 
-                    <TextBlock Text="Username" Margin="0,0,0,5" FontSize="12" Foreground="#666"/>
-                    <TextBox x:Name="usernameBox" 
-                             Height="40" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                             VerticalContentAlignment="Center" 
-                             Padding="12,0" 
-                             Margin="0,0,0,20"/>
+                            <TextBlock Text="Login into your account to manage libraries, users, books and rentals."
+                                       Foreground="#BFBFBF"
+                                       FontSize="13"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       LineHeight="20"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
 
-                    <TextBlock Text="Password" Margin="0,0,0,5" FontSize="12" Foreground="#666"/>
-                    <TextBox x:Name="passBox" 
-                             Height="40" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                             VerticalContentAlignment="Center" 
-                             Padding="12,0" 
-                             Margin="0,0,0,30"/>
-                    <TextBlock Text="{Binding Show_ErrorMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                               HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                               FontSize="9" FontWeight="SemiBold" Foreground="Red"/>
+                <!-- RIGHT SIDE -->
+                <Border Grid.Column="1"
+                        Background="#252526"
+                        CornerRadius="0,18,18,0"
+                        Padding="35">
 
-                    <Button Content="LOGIN" 
-                            Background="#4A90E2" 
-                            Foreground="White" 
-                            FontWeight="Bold" 
-                            Height="45" 
-                            Width="160" 
-                            HorizontalAlignment="Right" 
-                            Cursor="Hand"
-                            Command="{Binding Login_command}"
-                            >
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="10"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- WINDOW BUTTONS -->
+                        <DockPanel Grid.Row="0"
+                                   LastChildFill="False"
+                                   HorizontalAlignment="Right">
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="btnMinimize"
+                                        Width="35"
+                                        Height="35"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="btnMinimize_Click"
+                                        Cursor="Hand">
+                                    <Rectangle Width="12"
+                                               Height="2"
+                                               Fill="White"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"/>
+                                </Button>
+
+                                <Button x:Name="btnMaximize"
+                                        Content="☐"
+                                        Width="35"
+                                        Height="35"
+                                        Background="Transparent"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Click="btnMaximize_Click"
+                                        VerticalContentAlignment="Center"
+                                        FontSize="16"
+                                        Cursor="Hand"/>
+
+                                <Button x:Name="btnClose"
+                                        Content="✕"
+                                        Width="35"
+                                        Height="35"
+                                        Background="Transparent"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Click="btnClose_Click"
+                                        VerticalContentAlignment="Center"
+                                        FontSize="16"
+                                        Cursor="Hand"/>
+                            </StackPanel>
+                        </DockPanel>
+
+                        <!-- LOGIN FORM -->
+                        <StackPanel Grid.Row="1"
+                                    VerticalAlignment="Center"
+                                    Margin="10,0,10,0">
+
+                            <TextBlock Text="Login"
+                                       FontSize="38"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Left"
+                                       Foreground="#3498DB"
+                                       Margin="0,0,0,8"/>
+
+                            <TextBlock Text="Enter your username and password"
+                                       Foreground="#BFBFBF"
+                                       FontSize="13"
+                                       Margin="0,0,0,30"/>
+
+                            <TextBlock Text="Username"
+                                       Foreground="White"
+                                       Margin="0,0,0,6"/>
+
+                            <TextBox x:Name="usernameBox"
+                                     Height="40"
+                                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     Background="#333337"
+                                     Foreground="White"
+                                     BorderBrush="#3F3F46"
+                                     VerticalContentAlignment="Center"
+                                     Padding="12,0"
+                                     Margin="0,0,0,18"/>
+
+                            <TextBlock Text="Password"
+                                       Foreground="White"
+                                       Margin="0,0,0,6"/>
+
+                            <PasswordBox x:Name="passBox"
+                                         Height="40"
+                                         PasswordChanged="passBox_PasswordChanged"
+                                         Background="#333337"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="12,0"
+                                         Margin="0,0,0,12"/>
+
+                            <TextBlock Text="{Binding Show_ErrorMessage, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                       HorizontalAlignment="Left"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF5C5C"
+                                       TextWrapping="Wrap"
+                                       MinHeight="22"
+                                       Margin="0,0,0,18"/>
+
+                            <Button Content="LOGIN"
+                                    Background="#007ACC"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    Height="45"
+                                    Width="160"
+                                    HorizontalAlignment="Right"
+                                    Cursor="Hand"
+                                    Command="{Binding Login_command}">
+
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
     </Grid>

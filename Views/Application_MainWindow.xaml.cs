@@ -7,23 +7,26 @@ using System.Windows;
 
 namespace LibraryManagement.Views
 {
-    /// <summary>
-    /// Interaction logic for Application_MainWindow.xaml
-    /// </summary>
     public partial class Application_MainWindow : Window
     {
         private Model_User _currentUser;
+
         public Application_MainWindow(Model_User user)
         {
             InitializeComponent();
 
             _currentUser = user;
 
-            string role = (user.Role ?? string.Empty).Trim().ToLowerInvariant();
+            string role = string.Empty;
+
+            if (user != null && user.Role != null)
+            {
+                role = user.Role.Trim().ToLowerInvariant();
+            }
 
             if (role == "administrator" || role == "admin")
             {
-                MainContentArea.Content = new Admin_UserController(user);
+                ShowAdminLibraryManagement();
             }
             else if (role == "librarian")
             {
@@ -31,8 +34,15 @@ namespace LibraryManagement.Views
             }
             else
             {
+                string roleText = string.Empty;
+
+                if (user != null)
+                {
+                    roleText = user.Role;
+                }
+
                 MessageBox.Show(
-                    "Unknown user role: " + user.Role,
+                    "Unknown user role: " + roleText,
                     "Login Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
@@ -41,9 +51,32 @@ namespace LibraryManagement.Views
             }
         }
 
+        private void ShowAdminLibraryManagement()
+        {
+            var libraryView = new Admin_UserController(_currentUser);
+
+            libraryView.OpenUserManagementRequested += ShowAdminUserManagement;
+
+            MainContentArea.Content = libraryView;
+        }
+
+        private void ShowAdminUserManagement()
+        {
+            var userManagementView = new Administrator_UserManagement(_currentUser);
+
+            userManagementView.BackToLibrariesRequested += ShowAdminLibraryManagement;
+
+            MainContentArea.Content = userManagementView;
+        }
+
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+
+            if (_currentUser == null)
+            {
+                return;
+            }
 
             using (var db = new LibraryDbContext())
             {

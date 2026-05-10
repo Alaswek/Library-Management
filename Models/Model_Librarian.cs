@@ -1,15 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagement.Models
 {
-    [Table("Librarians")] //Observatia 3 din pdf: Am sters NotMapped ala
+    [Table("Librarians")]
     public class Model_Librarian : Model_User
     {
-      
+        private string _libraryName;
+
+        [NotMapped]
+        public string LibraryName
+        {
+            get
+            {
+                return _libraryName;
+            }
+            set
+            {
+                _libraryName = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

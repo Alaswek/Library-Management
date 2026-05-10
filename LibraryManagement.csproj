@@ -104,8 +104,10 @@
     <Compile Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml.cs">
       <DependentUpon>Librarian_UserController.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\Admin_LibraryManagement_ViewModel.cs" />
-    <Compile Include="ViewModels\Librarian_LibraryManagement_ViewModel.cs" />
+    <Compile Include="ViewModels\Administrator_viewmodels\AdminAccountsManagementViewModel.cs" />
+    <Compile Include="ViewModels\Administrator_viewmodels\AdminLibraryManagementViewModel.cs" />
+    <Compile Include="ViewModels\Administrator_viewmodels\Admin_LibraryManagement_ViewModel.cs" />
+    <Compile Include="ViewModels\Librarian_viewmodels\Librarian_LibraryManagement_ViewModel.cs" />
     <Compile Include="ViewModels\Login_ViewModel.cs" />
     <Compile Include="Views\Application_MainWindow.xaml.cs">
       <DependentUpon>Application_MainWindow.xaml</DependentUpon>

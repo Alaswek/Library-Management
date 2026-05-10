@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Data.Entity;
 
 namespace LibraryManagement.ViewModels
 {
@@ -237,20 +238,17 @@ namespace LibraryManagement.ViewModels
             {
                 using (var db = new LibraryDbContext())
                 {
-                    var librarians = db.Database.SqlQuery<Model_Librarian>(
-                        @"SELECT u.[Id],
-                                 u.[Username],
-                                 u.[Password],
-                                 u.[Role],
-                                 u.[IsActive],
-                                 ISNULL(u.[Library_ID], 0) AS [Library_ID],
-                                 ISNULL(l.[Name], N'Unassigned') AS [LibraryName]
-                          FROM [dbo].[Users] u
-                          LEFT JOIN [dbo].[Libraries] l ON l.[Id] = u.[Library_ID]
-                          WHERE LOWER(LTRIM(RTRIM(u.[Role]))) = @p0
-                          ORDER BY u.[Username]",
-                        "librarian")
+                    var librarians = db.Librarians
+                        .Include(librarian => librarian.Library)
+                        .OrderBy(librarian => librarian.Username)
                         .ToList();
+
+                    foreach (var librarian in librarians)
+                    {
+                        librarian.LibraryName = librarian.Library != null
+                            ? librarian.Library.Name
+                            : "Unassigned";
+                    }
 
                     Librarians = new ObservableCollection<Model_Librarian>(librarians);
                 }
@@ -440,10 +438,11 @@ namespace LibraryManagement.ViewModels
                 using (var db = new LibraryDbContext())
                 {
                     var trimmedUsername = LibrarianUsername.Trim();
-                    var usernameExists = db.Users
-                        .ToList()
-                        .Any(user => user.Id != _editingLibrarianId &&
-                                     string.Equals((user.Username ?? string.Empty).Trim(), trimmedUsername, StringComparison.OrdinalIgnoreCase));
+                    var normalizedUsername = trimmedUsername.ToLower();
+
+                    var usernameExists = db.Users.Any(user =>
+                        user.Id != _editingLibrarianId &&
+                        user.Username.ToLower() == normalizedUsername);
 
                     if (usernameExists)
                     {
@@ -459,40 +458,35 @@ namespace LibraryManagement.ViewModels
 
                     if (_editingLibrarianId > 0)
                     {
-                        var affectedRows = db.Database.ExecuteSqlCommand(
-                            @"UPDATE [dbo].[Users]
-                              SET [Username] = @p0,
-                                  [Password] = @p1,
-                                  [Role] = @p2,
-                                  [IsActive] = @p3,
-                                  [Library_ID] = @p4
-                              WHERE [Id] = @p5
-                                AND LOWER(LTRIM(RTRIM([Role]))) = @p6",
-                            trimmedUsername,
-                            LibrarianPassword,
-                            "librarian",
-                            IsLibrarianActive,
-                            SelectedLibrarianLibraryId,
-                            _editingLibrarianId,
-                            "librarian");
+                        var librarian = db.Librarians.FirstOrDefault(item => item.Id == _editingLibrarianId);
 
-                        if (affectedRows == 0)
+                        if (librarian == null)
                         {
                             LibrarianStatusMessage = "The selected librarian account no longer exists.";
                             return;
                         }
+
+                        librarian.Username = trimmedUsername;
+                        librarian.Password = LibrarianPassword;
+                        librarian.Role = "Librarian";
+                        librarian.IsActive = IsLibrarianActive;
+                        librarian.Library_ID = SelectedLibrarianLibraryId;
                     }
                     else
                     {
-                        db.Database.ExecuteSqlCommand(
-                            @"INSERT INTO [dbo].[Users] ([Username], [Password], [Role], [IsActive], [Library_ID])
-                              VALUES (@p0, @p1, @p2, @p3, @p4)",
-                            trimmedUsername,
-                            LibrarianPassword,
-                            "librarian",
-                            IsLibrarianActive,
-                            SelectedLibrarianLibraryId);
+                        var librarian = new Model_Librarian
+                        {
+                            Username = trimmedUsername,
+                            Password = LibrarianPassword,
+                            Role = "Librarian",
+                            IsActive = IsLibrarianActive,
+                            Library_ID = SelectedLibrarianLibraryId
+                        };
+
+                        db.Librarians.Add(librarian);
                     }
+
+                    db.SaveChanges();
                 }
 
                 var successMessage = _editingLibrarianId > 0
@@ -509,6 +503,7 @@ namespace LibraryManagement.ViewModels
                 MessageBox.Show("Error saving librarian account: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void StartEditingSelectedLibrarian()
         {
@@ -554,18 +549,16 @@ namespace LibraryManagement.ViewModels
             {
                 using (var db = new LibraryDbContext())
                 {
-                    var affectedRows = db.Database.ExecuteSqlCommand(
-                        @"DELETE FROM [dbo].[Users]
-                          WHERE [Id] = @p0
-                            AND LOWER(LTRIM(RTRIM([Role]))) = @p1",
-                        SelectedLibrarian.Id,
-                        "librarian");
+                    var librarian = db.Librarians.FirstOrDefault(item => item.Id == SelectedLibrarian.Id);
 
-                    if (affectedRows == 0)
+                    if (librarian == null)
                     {
                         LibrarianStatusMessage = "The selected librarian account no longer exists.";
                         return;
                     }
+
+                    db.Librarians.Remove(librarian);
+                    db.SaveChanges();
                 }
 
                 var successMessage = "Librarian account deleted successfully.";

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LibraryManagement.Models
 {
-    [NotMapped]
+    [Table("Admins")]
     public class Model_Administrator : Model_User
     {
     }
