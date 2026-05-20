@@ -14,7 +14,7 @@ namespace LibraryManagement.Models
         private string _address;
         private bool _isOpen;
         private ICollection<Model_Book> _books;
-        private int _availableSeats;
+        private string _openingHours;
 
         public Model_Library()
         {
@@ -56,18 +56,17 @@ namespace LibraryManagement.Models
             set { _books = value; OnPropertyChanged(); }
         }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Available seats cannot be negative")]
-        public int AvailableSeats
+        [Required]
+        [StringLength(50)]
+        public string OpeningHours
         {
-            get { return _availableSeats; }
+            get { return _openingHours; }
             set
             {
-                if (value < 0)
-                    throw new ArgumentException("Available seats cannot be negative");
-
-                _availableSeats = value;
+                _openingHours = value;
                 OnPropertyChanged();
             }
         }
+
     }
 }

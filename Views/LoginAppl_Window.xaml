@@ -183,22 +183,48 @@
                                        MinHeight="22"
                                        Margin="0,0,0,18"/>
 
-                            <Button Content="LOGIN"
-                                    Background="#007ACC"
-                                    Foreground="White"
-                                    FontWeight="Bold"
-                                    Height="45"
-                                    Width="160"
-                                    HorizontalAlignment="Right"
-                                    Cursor="Hand"
-                                    Command="{Binding Login_command}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="8"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+                                <Button Grid.Column="0"
+                                        Content="RESET PASSWORD WITH CODE"
+                                        Background="#3E3E42"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        Height="45"
+                                        Width="220"
+                                        HorizontalAlignment="Left"
+                                        Cursor="Hand"
+                                        Click="ResetPasswordWithCode_Click">
+
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+
+                                <Button Grid.Column="1"
+                                        Content="LOGIN"
+                                        Background="#007ACC"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        Height="45"
+                                        Width="135"
+                                        HorizontalAlignment="Right"
+                                        Cursor="Hand"
+                                        Command="{Binding Login_command}">
+
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
                         </StackPanel>
                     </Grid>
                 </Border>

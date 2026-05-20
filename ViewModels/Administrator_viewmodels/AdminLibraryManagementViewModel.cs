@@ -13,6 +13,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
     public class AdminLibraryManagementViewModel : ViewModelBase
     {
         private readonly Model_User _currentAdmin;
+
         private ObservableCollection<Model_Library> _libraries;
         private Model_Library _selectedLibrary;
         private int _editingLibraryId;
@@ -20,9 +21,14 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
         private string _libraryAddress;
         private bool _isOpen;
         private string _libraryStatusMessage;
+        private string _openingHours;
+        private bool _isInitialized;
 
-        public AdminLibraryManagementViewModel()
-            : this(null)
+        private const int LibraryNameMaxLength = 200;
+        private const int LibraryAddressMaxLength = 300;
+        private const int OpeningHoursMaxLength = 50;
+
+        public AdminLibraryManagementViewModel() : this(null)
         {
         }
 
@@ -42,6 +48,18 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             ClearFormCommand = new RelayCommand(_ => ResetForm());
 
             ResetForm();
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _isInitialized = true;
+
             LoadLibraries();
         }
 
@@ -147,8 +165,14 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     return 0;
                 }
 
-                return Libraries.Count(library => library.IsOpen);
+                return Libraries.Count(library => library != null && library.IsOpen);
             }
+        }
+
+        public string OpeningHours
+        {
+            get { return _openingHours; }
+            set { SetProperty(ref _openingHours, value); }
         }
 
         public ICommand SaveLibraryCommand { get; private set; }
@@ -188,21 +212,59 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             catch (Exception ex)
             {
                 LibraryStatusMessage = "Libraries could not be loaded.";
-                MessageBox.Show("Error loading libraries: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Error loading libraries: " + ex.Message,
+                    "Database Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
         private void SaveLibrary()
         {
-            if (string.IsNullOrWhiteSpace(LibraryName))
+            string name = Normalize(LibraryName);
+            string address = Normalize(LibraryAddress);
+            string openingHours = Normalize(OpeningHours);
+
+            if (string.IsNullOrWhiteSpace(name))
             {
                 LibraryStatusMessage = "Library name is required.";
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(LibraryAddress))
+            if (name.Length > LibraryNameMaxLength)
+            {
+                LibraryStatusMessage = string.Format(
+                    "Library name cannot be longer than {0} characters.",
+                    LibraryNameMaxLength);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(address))
             {
                 LibraryStatusMessage = "Library address is required.";
+                return;
+            }
+
+            if (address.Length > LibraryAddressMaxLength)
+            {
+                LibraryStatusMessage = string.Format(
+                    "Library address cannot be longer than {0} characters.",
+                    LibraryAddressMaxLength);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(openingHours))
+            {
+                LibraryStatusMessage = "Opening hours are required.";
+                return;
+            }
+
+            if (openingHours.Length > OpeningHoursMaxLength)
+            {
+                LibraryStatusMessage = string.Format(
+                    "Opening hours cannot be longer than {0} characters.",
+                    OpeningHoursMaxLength);
                 return;
             }
 
@@ -221,6 +283,8 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                         if (library == null)
                         {
                             LibraryStatusMessage = "The selected library no longer exists.";
+                            ResetForm();
+                            LoadLibraries();
                             return;
                         }
                     }
@@ -230,8 +294,22 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                         db.Libraries.Add(library);
                     }
 
-                    library.Name = LibraryName.Trim();
-                    library.Address = LibraryAddress.Trim();
+                    string normalizedName = name.ToLowerInvariant();
+
+                    bool duplicateNameExists = db.Libraries.Any(item =>
+                        item.Id != _editingLibraryId &&
+                        item.Name != null &&
+                        item.Name.ToLower() == normalizedName);
+
+                    if (duplicateNameExists)
+                    {
+                        LibraryStatusMessage = "A library with this name already exists.";
+                        return;
+                    }
+
+                    library.Name = name;
+                    library.Address = address;
+                    library.OpeningHours = openingHours;
                     library.IsOpen = IsOpen;
 
                     db.SaveChanges();
@@ -256,7 +334,11 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             catch (Exception ex)
             {
                 LibraryStatusMessage = "Library could not be saved.";
-                MessageBox.Show("Error saving library: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Error saving library: " + ex.Message,
+                    "Database Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -284,7 +366,9 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             _editingLibraryId = libraryToEdit.Id;
             LibraryName = libraryToEdit.Name;
             LibraryAddress = libraryToEdit.Address;
+            OpeningHours = libraryToEdit.OpeningHours;
             IsOpen = libraryToEdit.IsOpen;
+
             LibraryStatusMessage = string.Format("Editing library: {0}", libraryToEdit.Name);
 
             OnPropertyChanged(nameof(IsEditMode));
@@ -322,6 +406,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
             if (confirmation != MessageBoxResult.Yes)
             {
+                LibraryStatusMessage = "Delete operation was cancelled.";
                 return;
             }
 
@@ -329,9 +414,9 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             {
                 using (var db = new LibraryDbContext())
                 {
-                    var libraryId = libraryToDelete.Id;
+                    int libraryId = libraryToDelete.Id;
 
-                    var assignedLibrarians = db.Librarians.Any(librarian => librarian.Library_ID == libraryId);
+                    bool assignedLibrarians = db.Librarians.Any(librarian => librarian.Library_ID == libraryId);
 
                     if (assignedLibrarians)
                     {
@@ -339,11 +424,20 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                         return;
                     }
 
-                    var hasBooks = db.Books.Any(book => book.LibraryId == libraryId);
+                    bool hasBooks = db.Books.Any(book => book.LibraryId == libraryId);
 
                     if (hasBooks)
                     {
                         LibraryStatusMessage = "This library cannot be deleted while books are assigned to it.";
+                        return;
+                    }
+
+                    bool hasRentals = db.Rentals.Any(rental =>
+                        db.Books.Any(book => book.Id == rental.BookId && book.LibraryId == libraryId));
+
+                    if (hasRentals)
+                    {
+                        LibraryStatusMessage = "This library cannot be deleted while rentals are assigned to it.";
                         return;
                     }
 
@@ -352,6 +446,8 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     if (library == null)
                     {
                         LibraryStatusMessage = "The selected library no longer exists.";
+                        ResetForm();
+                        LoadLibraries();
                         return;
                     }
 
@@ -367,7 +463,11 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             catch (Exception ex)
             {
                 LibraryStatusMessage = "Library could not be deleted.";
-                MessageBox.Show("Error deleting library: " + ex.Message, "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(
+                    "Error deleting library: " + ex.Message,
+                    "Database Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
@@ -376,13 +476,26 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             _editingLibraryId = 0;
             LibraryName = string.Empty;
             LibraryAddress = string.Empty;
+            OpeningHours = string.Empty;
+
             IsOpen = true;
+
             SelectedLibrary = null;
 
             OnPropertyChanged(nameof(IsEditMode));
             OnPropertyChanged(nameof(FormTitle));
 
             RefreshCommandStates();
+        }
+
+        private static string Normalize(string value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            return value.Trim();
         }
     }
 }

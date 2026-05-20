@@ -40,6 +40,14 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
 
         private void Administrator_UserManagement_Loaded(object sender, RoutedEventArgs e)
         {
+            var viewModel = DataContext as AdminAccountsManagementViewModel;
+
+            if (viewModel != null)
+            {
+                viewModel.Initialize();
+            }
+
+
             SubscribeToViewModel();
             SyncPasswordBoxFromViewModel();
         }

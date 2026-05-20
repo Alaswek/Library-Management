@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using LibraryManagement.MVVM;
-using System.Linq;
 
 namespace LibraryManagement.Models
 {
@@ -17,6 +15,9 @@ namespace LibraryManagement.Models
         private bool _isActive;
         private int? _libraryId;
         private Model_Library _library;
+        private bool _mustChangePassword;
+        private string _passwordResetCode;
+        private DateTime? _passwordResetCodeExpiresAt;
 
         [Key]
         public int Id
@@ -30,6 +31,7 @@ namespace LibraryManagement.Models
         }
 
         [Required]
+        [StringLength(100)]
         public string Username
         {
             get { return _username; }
@@ -41,6 +43,7 @@ namespace LibraryManagement.Models
         }
 
         [Required]
+        [StringLength(255)]
         public string Password
         {
             get { return _password; }
@@ -52,6 +55,7 @@ namespace LibraryManagement.Models
         }
 
         [Required]
+        [StringLength(100)]
         public string Role
         {
             get { return _role; }
@@ -89,6 +93,37 @@ namespace LibraryManagement.Models
             set
             {
                 _library = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool MustChangePassword
+        {
+            get { return _mustChangePassword; }
+            set
+            {
+                _mustChangePassword = value;
+                OnPropertyChanged();
+            }
+        }
+
+        [StringLength(20)]
+        public string PasswordResetCode
+        {
+            get { return _passwordResetCode; }
+            set
+            {
+                _passwordResetCode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime? PasswordResetCodeExpiresAt
+        {
+            get { return _passwordResetCodeExpiresAt; }
+            set
+            {
+                _passwordResetCodeExpiresAt = value;
                 OnPropertyChanged();
             }
         }

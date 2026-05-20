@@ -101,19 +101,29 @@
     <Compile Include="UserControllers\Admin_UserControllers\Admin_UserController.xaml.cs">
       <DependentUpon>Admin_UserController.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControllers\Admin_UserControllers\AminRecoveryPassword_UserController.xaml.cs">
+      <DependentUpon>AminRecoveryPassword_UserController.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml.cs">
       <DependentUpon>Librarian_UserController.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Administrator_viewmodels\AdminAccountsManagementViewModel.cs" />
     <Compile Include="ViewModels\Administrator_viewmodels\AdminLibraryManagementViewModel.cs" />
-    <Compile Include="ViewModels\Administrator_viewmodels\Admin_LibraryManagement_ViewModel.cs" />
+    <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\Librarian_viewmodels\Librarian_LibraryManagement_ViewModel.cs" />
     <Compile Include="ViewModels\Login_ViewModel.cs" />
+    <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="Views\Application_MainWindow.xaml.cs">
       <DependentUpon>Application_MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ChangePassword_Window.xaml.cs">
+      <DependentUpon>ChangePassword_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginAppl_Window.xaml.cs">
       <DependentUpon>LoginAppl_Window.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResetPassword_Window.xaml.cs">
+      <DependentUpon>ResetPassword_Window.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +162,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControllers\Admin_UserControllers\AminRecoveryPassword_UserController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControllers\Librarian_UserControllers\Librarian_UserController.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -160,7 +174,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ChangePassword_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginAppl_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResetPassword_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

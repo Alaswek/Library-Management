@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
 
@@ -22,6 +23,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
         private Model_User _selectedAccount;
         private int _editingAccountId;
 
+        private bool _isInitialized;
         private string _accountUsername;
         private string _accountPassword;
         private string _selectedRole;
@@ -29,6 +31,11 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
         private int _selectedAccountLibraryId;
         private bool _isAccountActive;
         private string _accountStatusMessage;
+
+        private const int UsernameMaxLength = 100;
+        private const int PasswordMaxLength = 255;
+        private const int PasswordResetCodeLength = 6;
+        private const int PasswordResetCodeExpirationMinutes = 15;
 
         public AdminAccountsManagementViewModel()
             : this(null)
@@ -62,14 +69,16 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             DeleteSelectedAccountCommand = new RelayCommand(
                 parameter => DeleteSelectedAccount(parameter as Model_User));
 
+            ResetSelectedAccountPasswordCommand = new RelayCommand(
+                parameter => ResetSelectedAccountPassword(parameter as Model_User));
+
             ClearAccountFormCommand = new RelayCommand(_ => ResetAccountForm());
             RefreshAccountsCommand = new RelayCommand(_ => LoadAccounts());
 
             _selectedFilterRole = "All";
 
             ResetAccountForm();
-            LoadLibraries();
-            LoadAccounts();
+            AccountStatusMessage = "Ready. Initialize the account manager to load data.";
         }
 
         public string WelcomeMessage
@@ -186,6 +195,11 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             get { return _editingAccountId > 0; }
         }
 
+        public bool IsPasswordEnabled
+        {
+            get { return !IsAccountEditMode; }
+        }
+
         public string AccountFormTitle
         {
             get
@@ -226,7 +240,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     return 0;
                 }
 
-                return Accounts.Count(account => account.IsActive);
+                return Accounts.Count(account => account != null && account.IsActive);
             }
         }
 
@@ -239,7 +253,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     return 0;
                 }
 
-                return Accounts.Count(account => IsAdministratorRole(account.Role));
+                return Accounts.Count(account => account != null && IsAdministratorRole(account.Role));
             }
         }
 
@@ -252,15 +266,29 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     return 0;
                 }
 
-                return Accounts.Count(account => IsLibrarianRole(account.Role));
+                return Accounts.Count(account => account != null && IsLibrarianRole(account.Role));
             }
         }
 
         public ICommand SaveAccountCommand { get; private set; }
         public ICommand EditSelectedAccountCommand { get; private set; }
+        public ICommand ResetSelectedAccountPasswordCommand { get; private set; }
         public ICommand DeleteSelectedAccountCommand { get; private set; }
         public ICommand ClearAccountFormCommand { get; private set; }
         public ICommand RefreshAccountsCommand { get; private set; }
+
+        public void Initialize()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _isInitialized = true;
+
+            LoadLibraries();
+            LoadAccounts();
+        }
 
         private void LoadLibraries()
         {
@@ -308,8 +336,9 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
                     Accounts = new ObservableCollection<Model_User>(
                         accounts
-                            .OrderBy(account => account.Role)
-                            .ThenBy(account => account.Username)
+                            .Where(account => account != null)
+                            .OrderBy(account => account.Role ?? string.Empty)
+                            .ThenBy(account => account.Username ?? string.Empty)
                             .ToList());
                 }
 
@@ -333,15 +362,36 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
         private void SaveAccount()
         {
-            if (string.IsNullOrWhiteSpace(AccountUsername))
+            string trimmedUsername = Normalize(AccountUsername);
+            bool isEditMode = _editingAccountId > 0;
+
+            if (string.IsNullOrWhiteSpace(trimmedUsername))
             {
                 AccountStatusMessage = "Username is required.";
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(AccountPassword))
+            if (trimmedUsername.Length > UsernameMaxLength)
+            {
+                AccountStatusMessage = string.Format(
+                    "Username cannot be longer than {0} characters.",
+                    UsernameMaxLength);
+                return;
+            }
+
+            if (!isEditMode && string.IsNullOrWhiteSpace(AccountPassword))
             {
                 AccountStatusMessage = "Password is required.";
+                return;
+            }
+
+            if (!isEditMode &&
+                !string.IsNullOrEmpty(AccountPassword) &&
+                AccountPassword.Length > PasswordMaxLength)
+            {
+                AccountStatusMessage = string.Format(
+                    "Password cannot be longer than {0} characters.",
+                    PasswordMaxLength);
                 return;
             }
 
@@ -359,15 +409,19 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
             try
             {
+                bool needsSaveChanges;
+
                 using (var db = new LibraryDbContext())
                 {
-                    var trimmedUsername = AccountUsername.Trim();
-                    var normalizedUsername = trimmedUsername.ToLower();
+                    string normalizedUsername = trimmedUsername.ToLowerInvariant();
 
-                    var usernameExists = db.Users.Any(user =>
-                        user.Id != _editingAccountId &&
-                        user.Username != null &&
-                        user.Username.ToLower() == normalizedUsername);
+                    var existingUsernames = db.Users
+                        .Where(user => user.Id != _editingAccountId && user.Username != null)
+                        .Select(user => user.Username)
+                        .ToList();
+
+                    bool usernameExists = existingUsernames.Any(username =>
+                        Normalize(username).ToLowerInvariant() == normalizedUsername);
 
                     if (usernameExists)
                     {
@@ -384,13 +438,15 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
                     bool savedSuccessfully;
 
-                    if (_editingAccountId > 0)
+                    if (isEditMode)
                     {
                         savedSuccessfully = SaveExistingAccount(db, trimmedUsername);
+                        needsSaveChanges = false;
                     }
                     else
                     {
                         savedSuccessfully = CreateNewAccount(db, trimmedUsername);
+                        needsSaveChanges = true;
                     }
 
                     if (!savedSuccessfully)
@@ -398,12 +454,15 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                         return;
                     }
 
-                    db.SaveChanges();
+                    if (needsSaveChanges)
+                    {
+                        db.SaveChanges();
+                    }
                 }
 
                 string successMessage;
 
-                if (_editingAccountId > 0)
+                if (isEditMode)
                 {
                     successMessage = "Account updated successfully.";
                 }
@@ -473,6 +532,22 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
             var normalizedRole = NormalizeRole(SelectedRole);
 
+            if (_currentAdmin != null &&
+                existingUser.Id == _currentAdmin.Id &&
+                !IsAdministratorRole(normalizedRole))
+            {
+                AccountStatusMessage = "You cannot change your own administrator role.";
+                return false;
+            }
+
+            if (IsAdministratorRole(existingUser.Role) &&
+                !IsAdministratorRole(normalizedRole) &&
+                db.Admins.Count(admin => admin.Id != existingUser.Id) == 0)
+            {
+                AccountStatusMessage = "At least one administrator account must remain.";
+                return false;
+            }
+
             object targetLibraryValue;
 
             if (IsLibrarianRole(normalizedRole))
@@ -483,6 +558,8 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             {
                 targetLibraryValue = DBNull.Value;
             }
+
+            string passwordToSave = existingUser.Password;
 
             using (var transaction = db.Database.BeginTransaction())
             {
@@ -497,7 +574,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                               [Library_ID] = @p4
                           WHERE [Id] = @p5",
                         trimmedUsername,
-                        AccountPassword,
+                        passwordToSave,
                         normalizedRole,
                         IsAccountActive,
                         targetLibraryValue,
@@ -572,7 +649,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
             _editingAccountId = accountToEdit.Id;
             AccountUsername = accountToEdit.Username;
-            AccountPassword = accountToEdit.Password;
+            AccountPassword = string.Empty;
             SelectedRole = NormalizeRole(accountToEdit.Role);
 
             if (accountToEdit.Library_ID.HasValue)
@@ -588,10 +665,131 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             AccountStatusMessage = string.Format("Editing account: {0}", accountToEdit.Username);
 
             OnPropertyChanged(nameof(IsAccountEditMode));
+            OnPropertyChanged(nameof(IsPasswordEnabled));
             OnPropertyChanged(nameof(AccountFormTitle));
             OnPropertyChanged(nameof(IsLibrarySelectionRequired));
 
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void ResetSelectedAccountPassword(Model_User accountFromCommand)
+        {
+            Model_User accountToReset;
+
+            if (accountFromCommand != null)
+            {
+                accountToReset = accountFromCommand;
+            }
+            else
+            {
+                accountToReset = SelectedAccount;
+            }
+
+            if (accountToReset == null)
+            {
+                AccountStatusMessage = "Select an account to reset password.";
+                return;
+            }
+
+            SelectedAccount = accountToReset;
+
+            var confirmation = MessageBox.Show(
+                string.Format("Generate a password reset code for \"{0}\"?", accountToReset.Username),
+                "Confirm Password Reset",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                AccountStatusMessage = "Password reset operation was cancelled.";
+                return;
+            }
+
+            try
+            {
+                using (var db = new LibraryDbContext())
+                {
+                    var user = db.Users.FirstOrDefault(item => item.Id == accountToReset.Id);
+
+                    if (user == null)
+                    {
+                        AccountStatusMessage = "The selected account no longer exists.";
+                        return;
+                    }
+
+                    string resetCode = GeneratePasswordResetCode();
+                    DateTime expiresAt = DateTime.UtcNow.AddMinutes(PasswordResetCodeExpirationMinutes);
+
+                    user.MustChangePassword = true;
+                    user.PasswordResetCode = resetCode;
+                    user.PasswordResetCodeExpiresAt = expiresAt;
+
+                    db.SaveChanges();
+
+                    accountToReset.MustChangePassword = true;
+                    accountToReset.PasswordResetCode = resetCode;
+                    accountToReset.PasswordResetCodeExpiresAt = expiresAt;
+
+                    AccountStatusMessage = string.Format(
+                        "Password reset code generated for {0}. The code expires in {1} minutes.",
+                        user.Username,
+                        PasswordResetCodeExpirationMinutes);
+
+                    MessageBox.Show(
+                        string.Format(
+                            "Reset code for {0}: {1}\n\nThis code expires in {2} minutes.",
+                            user.Username,
+                            resetCode,
+                            PasswordResetCodeExpirationMinutes),
+                        "Password Reset Code",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+
+                CommandManager.InvalidateRequerySuggested();
+            }
+            catch (Exception ex)
+            {
+                AccountStatusMessage = "Password reset code could not be generated.";
+
+                MessageBox.Show(
+                    "Error generating password reset code: " + ex.Message,
+                    "Database Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private string GeneratePasswordResetCode()
+        {
+            const string allowedCharacters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+            char[] code = new char[PasswordResetCodeLength];
+
+            using (var randomNumberGenerator = RandomNumberGenerator.Create())
+            {
+                byte[] buffer = new byte[1];
+
+                int index = 0;
+
+                while (index < PasswordResetCodeLength)
+                {
+                    randomNumberGenerator.GetBytes(buffer);
+
+                    int value = buffer[0];
+                    int maxValidValue = byte.MaxValue - ((byte.MaxValue + 1) % allowedCharacters.Length);
+
+                    if (value > maxValidValue)
+                    {
+                        continue;
+                    }
+
+                    code[index] = allowedCharacters[value % allowedCharacters.Length];
+                    index++;
+                }
+            }
+
+            return new string(code);
         }
 
         private void DeleteSelectedAccount(Model_User accountFromCommand)
@@ -623,6 +821,13 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
 
             if (confirmation != MessageBoxResult.Yes)
             {
+                AccountStatusMessage = "Delete operation was cancelled.";
+                return;
+            }
+
+            if (_currentAdmin != null && accountToDelete.Id == _currentAdmin.Id)
+            {
+                AccountStatusMessage = "You cannot delete your own administrator account.";
                 return;
             }
 
@@ -649,6 +854,14 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                         if (administrator == null)
                         {
                             AccountStatusMessage = "The selected account no longer exists.";
+                            return;
+                        }
+
+                        bool isLastAdministrator = db.Admins.Count(admin => admin.Id != accountToDelete.Id) == 0;
+
+                        if (isLastAdministrator)
+                        {
+                            AccountStatusMessage = "At least one administrator account must remain.";
                             return;
                         }
 
@@ -687,10 +900,21 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             SelectedAccount = null;
 
             OnPropertyChanged(nameof(IsAccountEditMode));
+            OnPropertyChanged(nameof(IsPasswordEnabled));
             OnPropertyChanged(nameof(AccountFormTitle));
             OnPropertyChanged(nameof(IsLibrarySelectionRequired));
 
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private string Normalize(string value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            return value.Trim();
         }
 
         private string NormalizeRole(string role)

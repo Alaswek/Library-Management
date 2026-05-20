@@ -6,7 +6,8 @@
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="1000"
-             Background="#1E1E1E">
+             Background="#1E1E1E"
+             Loaded="Administrator_UserManagement_Loaded">
 
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
@@ -53,6 +54,7 @@
                            Margin="0,0,0,5"/>
 
                 <PasswordBox x:Name="passwordBox"
+                             IsEnabled="{Binding IsPasswordEnabled, Mode=OneWay}"
                              Height="30"
                              PasswordChanged="passwordBox_PasswordChanged"
                              Background="#333337"
@@ -60,7 +62,8 @@
                              BorderBrush="#3F3F46"
                              VerticalContentAlignment="Center"
                              Padding="5,0"
-                             Margin="0,0,0,15"/>
+                             Margin="0,0,0,15"
+                             ToolTip="Password can be set only when creating a new account."/>
 
                 <TextBlock Text="Role"
                            Foreground="White"
@@ -107,6 +110,16 @@
                         Cursor="Hand"
                         Command="{Binding SaveAccountCommand}"/>
 
+                <Button Content="DELETE SELECTED"
+                         Height="40"
+                         Margin="0,0,0,10"
+                         Background="#C42B1C"
+                         Foreground="White"
+                         FontWeight="Bold"
+                         Cursor="Hand"
+                         Command="{Binding DeleteSelectedAccountCommand}"
+                         CommandParameter="{Binding SelectedAccount}"/>
+                
                 <Button Content="LOAD SELECTED"
                         Height="40"
                         Margin="0,0,0,10"
@@ -117,20 +130,11 @@
                         Command="{Binding EditSelectedAccountCommand}"
                         CommandParameter="{Binding SelectedAccount}"/>
 
-                <Button Content="DELETE SELECTED"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        Background="#C42B1C"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding DeleteSelectedAccountCommand}"
-                        CommandParameter="{Binding SelectedAccount}"/>
 
                 <Button Content="CLEAR FORM"
                         Height="35"
                         Margin="0,0,0,10"
-                        Background="#555555"
+                        Background="#3E3E42"
                         Foreground="White"
                         FontWeight="Bold"
                         Cursor="Hand"
@@ -145,10 +149,12 @@
                         Cursor="Hand"
                         Command="{Binding RefreshAccountsCommand}"/>
 
+                <Separator Margin="0,15,0,10"/>
+
                 <Button Content="BACK TO LIBRARIES"
                         Height="40"
-                        Margin="0,15,0,0"
-                        Background="#3E3E42"
+                        Margin="0,10,0,0"
+                        Background="#007ACC"
                         Foreground="White"
                         FontWeight="Bold"
                         Cursor="Hand"
@@ -269,55 +275,73 @@
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id"
-                                        Binding="{Binding Id}"
-                                        Width="60"/>
+    <DataGridTextColumn Header="Id"
+                        Binding="{Binding Id}"
+                        Width="60"/>
 
-                    <DataGridTextColumn Header="Username"
-                                        Binding="{Binding Username}"
-                                        Width="*"/>
+    <DataGridTextColumn Header="Username"
+                        Binding="{Binding Username}"
+                        Width="*"/>
 
-                    <DataGridTextColumn Header="Password"
-                                        Binding="{Binding Password}"
-                                        Width="*"/>
+    <DataGridTemplateColumn Header="Password"
+                            Width="120">
+        <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+                <TextBlock Text="Hidden"
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+            </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+    </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Header="Role"
-                                        Binding="{Binding Role}"
-                                        Width="130"/>
+    <DataGridTextColumn Header="Role"
+                        Binding="{Binding Role}"
+                        Width="130"/>
 
-                    <DataGridTextColumn Header="Library"
-                                        Binding="{Binding Library.Name}"
-                                        Width="160"/>
+    <DataGridTextColumn Header="Library"
+                        Binding="{Binding Library.Name}"
+                        Width="160"/>
 
-                    <DataGridCheckBoxColumn Header="Active"
-                                            Binding="{Binding IsActive}"
-                                            Width="80"/>
+    <DataGridCheckBoxColumn Header="Active"
+                            Binding="{Binding IsActive}"
+                            Width="80"/>
 
                     <DataGridTemplateColumn Header="Actions"
-                                            Width="160">
+                        Width="240">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button Content="Edit"
-                                            Width="65"
-                                            Margin="0,0,5,0"
-                                            Background="#3E3E42"
-                                            Foreground="White"
-                                            BorderThickness="0"
-                                            Padding="8,2"
-                                            Cursor="Hand"
-                                            Command="{Binding DataContext.EditSelectedAccountCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                            CommandParameter="{Binding}"/>
+                        Width="55"
+                        Margin="0,0,5,0"
+                        Background="#3E3E42"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Padding="8,2"
+                        Cursor="Hand"
+                        Command="{Binding DataContext.EditSelectedAccountCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                        CommandParameter="{Binding}"/>
+
+                                    <Button Content="Reset"
+                        Width="65"
+                        Margin="0,0,5,0"
+                        Background="#007ACC"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Padding="8,2"
+                        Cursor="Hand"
+                        Command="{Binding DataContext.ResetSelectedAccountPasswordCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                        CommandParameter="{Binding}"/>
 
                                     <Button Content="Delete"
-                                            Width="75"
-                                            Background="#C42B1C"
-                                            Foreground="White"
-                                            BorderThickness="0"
-                                            Padding="8,2"
-                                            Cursor="Hand"
-                                            Command="{Binding DataContext.DeleteSelectedAccountCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                            CommandParameter="{Binding}"/>
+                        Width="75"
+                        Background="#C42B1C"
+                        Foreground="White"
+                        BorderThickness="0"
+                        Padding="8,2"
+                        Cursor="Hand"
+                        Command="{Binding DataContext.DeleteSelectedAccountCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                        CommandParameter="{Binding}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

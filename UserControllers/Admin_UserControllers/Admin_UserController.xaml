@@ -40,6 +40,7 @@
                            Margin="0,0,0,5"/>
 
                 <TextBox Height="30"
+                         MaxLength="200"
                          Text="{Binding LibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Background="#333337"
                          Foreground="White"
@@ -53,7 +54,22 @@
                            Margin="0,0,0,5"/>
 
                 <TextBox Height="30"
+                         MaxLength="300"
                          Text="{Binding LibraryAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Background="#333337"
+                         Foreground="White"
+                         BorderBrush="#3F3F46"
+                         VerticalContentAlignment="Center"
+                         Padding="5,0"
+                         Margin="0,0,0,15"/>
+
+                <TextBlock Text="Opening Hours"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+
+                <TextBox Height="30"
+                         MaxLength="50"
+                         Text="{Binding OpeningHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Background="#333337"
                          Foreground="White"
                          BorderBrush="#3F3F46"
@@ -75,6 +91,16 @@
                         Cursor="Hand"
                         Command="{Binding SaveLibraryCommand}"/>
 
+                <Button Content="DELETE SELECTED"
+                         Height="40"
+                         Margin="0,0,0,10"
+                         Background="#C42B1C"
+                         Foreground="White"
+                         FontWeight="Bold"
+                         Cursor="Hand"
+                         Command="{Binding DeleteSelectedLibraryCommand}"/>
+
+
                 <Button Content="LOAD SELECTED"
                         Height="40"
                         Margin="0,0,0,10"
@@ -84,32 +110,26 @@
                         Cursor="Hand"
                         Command="{Binding EditSelectedLibraryCommand}"/>
 
-                <Button Content="DELETE SELECTED"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        Background="#C42B1C"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding DeleteSelectedLibraryCommand}"/>
-
                 <Button Content="CLEAR FORM"
                         Height="35"
                         Margin="0,0,0,10"
-                        Background="#555555"
+                        Background="#3E3E42"
                         Foreground="White"
                         FontWeight="Bold"
                         Cursor="Hand"
                         Command="{Binding ClearFormCommand}"/>
 
+                <Separator Margin="0,15,0,15"/>
+
                 <Button Content="MANAGE USERS"
-                        Height="40"
-                        Margin="0,15,0,0"
-                        Background="#007ACC"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Click="OpenUserManagement_Click"/>
+                    Height="40"
+                    Margin="0,0,0,10"
+                    Background="#007ACC"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Cursor="Hand"
+                    Click="OpenUserManagement_Click"/>
+
             </StackPanel>
         </Border>
 
@@ -213,13 +233,13 @@
                                         Binding="{Binding Address}"
                                         Width="2*"/>
 
+                    <DataGridTextColumn Header="Opening Hours"
+                                        Binding="{Binding OpeningHours}"
+                                        Width="130"/>
+
                     <DataGridCheckBoxColumn Header="Open"
                                             Binding="{Binding IsOpen}"
                                             Width="80"/>
-
-                    <DataGridTextColumn Header="Seats"
-                                        Binding="{Binding AvailableSeats}"
-                                        Width="90"/>
 
                     <DataGridTemplateColumn Header="Actions"
                                             Width="160">

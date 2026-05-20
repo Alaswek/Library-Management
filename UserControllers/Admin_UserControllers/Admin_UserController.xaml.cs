@@ -1,5 +1,6 @@
 using LibraryManagement.Models;
 using LibraryManagement.ViewModels.Administrator_viewmodels;
+using LibraryManagement.Views;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
     public partial class Admin_UserController : UserControl
     {
         public event Action OpenUserManagementRequested;
+        private readonly Model_User _currentAdmin;
 
         public Admin_UserController()
             : this(null)
@@ -18,7 +20,7 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
         public Admin_UserController(Model_User currentAdmin)
         {
             InitializeComponent();
-
+            _currentAdmin = currentAdmin;
             DataContext = new AdminLibraryManagementViewModel(currentAdmin);
         }
 
@@ -29,5 +31,7 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
                 OpenUserManagementRequested();
             }
         }
+
+        
     }
 }

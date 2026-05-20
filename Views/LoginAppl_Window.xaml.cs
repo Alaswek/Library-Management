@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+
 namespace LibraryManagement.Views
 {
     public partial class LoginAppl_Window : Window
@@ -62,5 +63,13 @@ namespace LibraryManagement.Views
         {
             Close();
         }
+
+        private void ResetPasswordWithCode_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new ResetPassword_Window();
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
     }
 }
