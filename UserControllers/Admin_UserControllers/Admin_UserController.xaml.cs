@@ -10,6 +10,7 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
     public partial class Admin_UserController : UserControl
     {
         public event Action OpenUserManagementRequested;
+        public event Action<Model_Library> OpenLibraryBooksRequested;
         private readonly Model_User _currentAdmin;
 
         public Admin_UserController()
@@ -32,6 +33,33 @@ namespace LibraryManagement.UserControllers.Admin_UserControllers
             }
         }
 
-        
+        private void ManageBooks_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+
+            if (button == null)
+            {
+                return;
+            }
+
+            var library = button.CommandParameter as Model_Library;
+
+            if (library == null)
+            {
+                MessageBox.Show(
+                    "Could not identify the selected library.",
+                    "Navigation Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            if (OpenLibraryBooksRequested != null)
+            {
+                OpenLibraryBooksRequested(library);
+            }
+        }
+
     }
 }

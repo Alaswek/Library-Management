@@ -1,16 +1,16 @@
-﻿<UserControl x:Class="LibraryManagement.UserControllers.Librarian_UserControllers.Librarian_UserController"
+﻿<UserControl x:Class="LibraryManagement.UserControllers.Admin_UserControllers.AdminLibraryBooks_UserController"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
-             d:DesignHeight="700"
-             d:DesignWidth="1200"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LibraryManagement.UserControllers.Admin_UserControllers"
+             mc:Ignorable="d" 
              MinWidth="1050"
              MinHeight="700"
              Background="#1E1E1E"
-             Loaded="UserControl_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
 
+    
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="330" MinWidth="300"/>
@@ -37,48 +37,48 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
-                           Text="BOOK MANAGEMENT"
-                           Foreground="#3498DB"
-                           FontSize="16"
-                           FontWeight="Bold"
-                           Margin="0,0,0,14"
-                           HorizontalAlignment="Center"/>
+                               Text="ADMIN BOOK MANAGEMENT"
+                               Foreground="#3498DB"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Margin="0,0,0,14"
+                               HorizontalAlignment="Center"/>
 
                     <!-- BOOK FORM -->
                     <Border Grid.Row="1"
-                        Background="#333337"
-                        Padding="10"
-                        CornerRadius="5"
-                        Margin="0,0,0,10">
+                            Background="#333337"
+                            Padding="10"
+                            CornerRadius="5"
+                            Margin="0,0,0,10">
 
                         <StackPanel>
                             <TextBlock Text="Title:"
-                                   Foreground="White"
-                                   Margin="0,0,0,5"/>
+                                       Foreground="White"
+                                       Margin="0,0,0,5"/>
 
                             <TextBox Height="30"
-                                 Text="{Binding EditingBook.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsReadOnly="{Binding IsBookFormReadOnly}"
-                                 Background="#252526"
-                                 Foreground="White"
-                                 BorderBrush="#3F3F46"
-                                 VerticalContentAlignment="Center"
-                                 Padding="5,0"
-                                 Margin="0,0,0,10"/>
+                                     Text="{Binding EditingBook.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     IsReadOnly="{Binding IsBookFormReadOnly}"
+                                     Background="#252526"
+                                     Foreground="White"
+                                     BorderBrush="#3F3F46"
+                                     VerticalContentAlignment="Center"
+                                     Padding="5,0"
+                                     Margin="0,0,0,10"/>
 
                             <TextBlock Text="Author:"
-                                   Foreground="White"
-                                   Margin="0,0,0,5"/>
+                                       Foreground="White"
+                                       Margin="0,0,0,5"/>
 
                             <TextBox Height="30"
-                                 Text="{Binding EditingBook.Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsReadOnly="{Binding IsBookFormReadOnly}"
-                                 Background="#252526"
-                                 Foreground="White"
-                                 BorderBrush="#3F3F46"
-                                 VerticalContentAlignment="Center"
-                                 Padding="5,0"
-                                 Margin="0,0,0,10"/>
+                                     Text="{Binding EditingBook.Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     IsReadOnly="{Binding IsBookFormReadOnly}"
+                                     Background="#252526"
+                                     Foreground="White"
+                                     BorderBrush="#3F3F46"
+                                     VerticalContentAlignment="Center"
+                                     Padding="5,0"
+                                     Margin="0,0,0,10"/>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -89,32 +89,32 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Quantity:"
-                                           Foreground="White"
-                                           Margin="0,0,0,5"/>
+                                               Foreground="White"
+                                               Margin="0,0,0,5"/>
 
                                     <TextBox Height="30"
-                                     Text="{Binding EditingBook.Quantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     IsReadOnly="{Binding IsBookFormReadOnly}"
-                                     Background="#252526"
-                                     Foreground="White"
-                                     BorderBrush="#3F3F46"
-                                     VerticalContentAlignment="Center"
-                                     Padding="5,0"/>
+                                             Text="{Binding EditingBook.Quantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                             IsReadOnly="{Binding IsBookFormReadOnly}"
+                                             Background="#252526"
+                                             Foreground="White"
+                                             BorderBrush="#3F3F46"
+                                             VerticalContentAlignment="Center"
+                                             Padding="5,0"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Available:"
-                                           Foreground="White"
-                                           Margin="0,0,0,5"/>
+                                               Foreground="White"
+                                               Margin="0,0,0,5"/>
 
                                     <TextBox Height="30"
-                                         Text="{Binding EditingBook.AvailableQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         IsReadOnly="True"
-                                         Background="#252526"
-                                         Foreground="White"
-                                         BorderBrush="#3F3F46"
-                                         VerticalContentAlignment="Center"
-                                         Padding="5,0"/>
+                                             Text="{Binding EditingBook.AvailableQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             IsReadOnly="True"
+                                             Background="#252526"
+                                             Foreground="White"
+                                             BorderBrush="#3F3F46"
+                                             VerticalContentAlignment="Center"
+                                             Padding="5,0"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -124,14 +124,14 @@
                     <StackPanel Grid.Row="2">
 
                         <Button Content="{Binding BookSaveButtonText}"
-                            Height="36"
-                            Margin="0,0,0,8"
-                            Background="#2D7D46"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            Cursor="Hand"
-                            Command="{Binding SaveBookCommand}"
-                            IsEnabled="{Binding IsBookFormEditable}"/>  
+                                Height="36"
+                                Margin="0,0,0,8"
+                                Background="#2D7D46"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding SaveBookCommand}"
+                                IsEnabled="{Binding IsBookFormEditable}"/>
 
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
@@ -141,58 +141,58 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Column="0"
-                                Content="CLEAR"
-                                Height="36"
-                                Background="#3E3E42"
-                                Foreground="White"
-                                FontWeight="Bold"
-                                Cursor="Hand"
-                                Command="{Binding CancelBookCommand}"/>
+                                    Content="CLEAR"
+                                    Height="36"
+                                    Background="#3E3E42"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    Cursor="Hand"
+                                    Command="{Binding CancelBookCommand}"/>
 
                             <Button Grid.Column="2"
-                                Content="DELETE SELECTED"
-                                Height="36"
-                                Background="#C42B1C"
-                                Foreground="White"
-                                FontWeight="Bold"
-                                Cursor="Hand"
-                                Command="{Binding DeleteBookCommand}"/>
+                                    Content="DELETE SELECTED"
+                                    Height="36"
+                                    Background="#C42B1C"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    Cursor="Hand"
+                                    Command="{Binding DeleteBookCommand}"/>
                         </Grid>
                     </StackPanel>
 
                     <Separator Grid.Row="3"
-                           Margin="0,8,0,10"/>
+                               Margin="0,8,0,10"/>
 
                     <!-- RENT BOOK -->
                     <StackPanel Grid.Row="4">
 
                         <TextBlock Text="RENT BOOK"
-                               Foreground="#3498DB"
-                               FontSize="14"
-                               FontWeight="Bold"
-                               Margin="0,0,0,10"
-                               HorizontalAlignment="Center"/>
+                                   Foreground="#3498DB"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,10"
+                                   HorizontalAlignment="Center"/>
 
                         <TextBlock Foreground="White"
-                               FontWeight="SemiBold"
-                               TextWrapping="Wrap"
-                               Margin="0,0,0,10">
-                        <Run Text="Book selected: "/>
-                        <Run Text="{Binding SelectedBook.Title, Mode=OneWay, TargetNullValue='No book selected', FallbackValue='No book selected'}"/>
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,10">
+                            <Run Text="Book selected: "/>
+                            <Run Text="{Binding SelectedBook.Title, Mode=OneWay, TargetNullValue='No book selected', FallbackValue='No book selected'}"/>
                         </TextBlock>
 
                         <TextBlock Text="Full Name:"
-                               Foreground="White"
-                               Margin="0,0,0,5"/>
+                                   Foreground="White"
+                                   Margin="0,0,0,5"/>
 
                         <TextBox Height="30"
-                             Text="{Binding RentMemberFullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Background="#333337"
-                             Foreground="White"
-                             BorderBrush="#3F3F46"
-                             VerticalContentAlignment="Center"
-                             Padding="5,0"
-                             Margin="0,0,0,10"/>
+                                 Text="{Binding RentMemberFullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="#333337"
+                                 Foreground="White"
+                                 BorderBrush="#3F3F46"
+                                 VerticalContentAlignment="Center"
+                                 Padding="5,0"
+                                 Margin="0,0,0,10"/>
 
                         <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
@@ -203,64 +203,76 @@
 
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Email:"
-                                       Foreground="White"
-                                       Margin="0,0,0,5"/>
+                                           Foreground="White"
+                                           Margin="0,0,0,5"/>
 
                                 <TextBox Height="30"
-                                     Text="{Binding RentMemberEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     Background="#333337"
-                                     Foreground="White"
-                                     BorderBrush="#3F3F46"
-                                     VerticalContentAlignment="Center"
-                                     Padding="5,0"/>
+                                         Text="{Binding RentMemberEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="#333337"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Phone:"
-                                       Foreground="White"
-                                       Margin="0,0,0,5"/>
+                                           Foreground="White"
+                                           Margin="0,0,0,5"/>
 
                                 <TextBox Height="30"
-                                     Text="{Binding RentMemberPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     Background="#333337"
-                                     Foreground="White"
-                                     BorderBrush="#3F3F46"
-                                     VerticalContentAlignment="Center"
-                                     Padding="5,0"/>
+                                         Text="{Binding RentMemberPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="#333337"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"/>
                             </StackPanel>
                         </Grid>
 
                         <TextBlock Text="Due Date:"
-                               Foreground="White"
-                               Margin="0,0,0,5"/>
+                                   Foreground="White"
+                                   Margin="0,0,0,5"/>
 
                         <DatePicker SelectedDate="{Binding RentalDueDate, Mode=TwoWay}"
-                            SelectedDateFormat="Short"
-                            Height="30"
-                            Background="White"
-                            Foreground="Black"
-                            BorderBrush="#3F3F46"
-                            VerticalContentAlignment="Center"
-                            Margin="0,0,0,10"/>
+                                    SelectedDateFormat="Short"
+                                    Height="30"
+                                    Background="White"
+                                    Foreground="Black"
+                                    BorderBrush="#3F3F46"
+                                    VerticalContentAlignment="Center"
+                                    Margin="0,0,0,10"/>
 
                         <Button Content="RENT BOOK"
-                            Height="36"
-                            Background="#2D7D46"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            Cursor="Hand"
-                            Command="{Binding RentBookCommand}"/>
+                                Height="36"
+                                Background="#2D7D46"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding RentBookCommand}"/>
                     </StackPanel>
 
-                    <Button Grid.Row="5"
-                        Content="REFRESH DATA"
-                        Height="34"
-                        Margin="0,10,0,0"
-                        Background="#007ACC"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding RefreshDataCommand}"/>
+                    <!-- BOTTOM BUTTONS -->
+                    <StackPanel Grid.Row="5"
+                                Margin="0,10,0,0">
+
+                        <Button Content="REFRESH DATA"
+                                Height="34"
+                                Margin="0,0,0,8"
+                                Background="#007ACC"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding RefreshDataCommand}"/>
+
+                        <Button Content="BACK TO LIBRARIES"
+                                Height="34"
+                                Background="#3E3E42"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Click="BackToLibraries_Click"/>
+                    </StackPanel>
                 </Grid>
             </ScrollViewer>
         </Border>
@@ -330,10 +342,10 @@
 
                         <!-- SEARCH BOOKS -->
                         <Border Grid.Row="0"
-                        Background="#252526"
-                        Padding="10"
-                        CornerRadius="5"
-                        Margin="0,0,0,15">
+                                Background="#252526"
+                                Padding="10"
+                                CornerRadius="5"
+                                Margin="0,0,0,15">
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -342,20 +354,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Column="0"
-                                   Text="Search:"
-                                   Foreground="White"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,8,0"/>
+                                           Text="Search:"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
 
                                 <TextBox Grid.Column="1"
-                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                 Height="30"
-                 Background="#333337"
-                 Foreground="White"
-                 BorderBrush="#3F3F46"
-                 VerticalContentAlignment="Center"
-                 Padding="5,0"
-                 ToolTip="Search by title or author"/>
+                                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                         Height="30"
+                                         Background="#333337"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"
+                                         ToolTip="Search by title or author"/>
                             </Grid>
                         </Border>
 
@@ -389,7 +401,6 @@
                                     <Setter Property="Padding" Value="10,5"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
-
 
                                 <Style TargetType="DataGridRow">
                                     <Setter Property="Cursor" Value="Hand"/>
@@ -515,7 +526,6 @@
                                     <Setter Property="Padding" Value="10,5"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
-
 
                                 <Style TargetType="DataGridRow">
                                     <Setter Property="Cursor" Value="Hand"/>
@@ -669,7 +679,6 @@
                                     <Setter Property="Padding" Value="10,5"/>
                                     <Setter Property="FontWeight" Value="Bold"/>
                                 </Style>
-
 
                                 <Style TargetType="DataGridRow">
                                     <Setter Property="Cursor" Value="Hand"/>

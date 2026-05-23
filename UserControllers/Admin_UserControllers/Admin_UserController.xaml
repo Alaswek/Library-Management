@@ -236,7 +236,7 @@
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
 
                     <DataGridTemplateColumn Header="Actions"
-                                            Width="160">
+                                            Width="Auto">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -256,9 +256,19 @@
                                             Background="#C42B1C"
                                             Foreground="White"
                                             BorderThickness="0"
+                                            Margin="0,0,5,0"
                                             Padding="8,2"
                                             Cursor="Hand"
                                             Command="{Binding DataContext.DeleteSelectedLibraryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Content="Books"
+                                            Width="75"
+                                            Background="#007ACC"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Padding="8,2"
+                                            Cursor="Hand"
+                                            Click="ManageBooks_Click"
                                             CommandParameter="{Binding}"/>
                                 </StackPanel>
                             </DataTemplate>

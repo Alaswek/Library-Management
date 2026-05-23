@@ -6,20 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using System.Globalization;
-using System.Text;
 
-
-namespace LibraryManagement.ViewModels
+namespace LibraryManagement.ViewModels.Administrator_viewmodels
 {
-    public class Librarian_LibraryManagement_ViewModel : ViewModelBase
+    public class AdminLibraryBooksViewModel : ViewModelBase
     {
         #region Fields
 
-        private readonly Model_User _currentLibrarian;
+        private readonly Model_User _currentAdmin;
+        private readonly Model_Library _selectedLibrary;
 
         private ObservableCollection<Model_Book> _books;
         private ObservableCollection<Model_Book> _filteredBooks;
@@ -40,7 +40,6 @@ namespace LibraryManagement.ViewModels
         private string _rentMemberPhone;
         private string _selectedCategory;
 
-
         private Model_Book _selectedBook;
         private Model_Member _selectedMember;
         private Model_Rental _selectedRental;
@@ -59,18 +58,20 @@ namespace LibraryManagement.ViewModels
         private string _memberOverviewSearchText;
         private Model_Member _selectedOverviewMember;
 
-
         #endregion
 
         #region Constructors
 
-        public Librarian_LibraryManagement_ViewModel() : this(null)
+        public AdminLibraryBooksViewModel()
+            : this(null, null)
         {
         }
 
-        public Librarian_LibraryManagement_ViewModel(Model_User currentLibrarian)
+        public AdminLibraryBooksViewModel(Model_User currentAdmin, Model_Library selectedLibrary)
         {
-            _currentLibrarian = currentLibrarian;
+            _currentAdmin = currentAdmin;
+            _selectedLibrary = selectedLibrary;
+
             _rentalDueDate = DateTime.Now.AddDays(14);
             _showRentalHistory = false;
 
@@ -115,12 +116,24 @@ namespace LibraryManagement.ViewModels
         {
             get
             {
-                if (_currentLibrarian != null && !string.IsNullOrWhiteSpace(_currentLibrarian.Username))
+                string adminName = "Administrator";
+
+                if (_currentAdmin != null && !string.IsNullOrWhiteSpace(_currentAdmin.Username))
                 {
-                    return string.Format("Welcome, {0}!  ---    Library: {1}", _currentLibrarian.Username, _currentLibrarian.Library.Name);
+                    adminName = _currentAdmin.Username;
                 }
 
-                return "Welcome, Librarian - Library Management System";
+                if (_selectedLibrary != null && !string.IsNullOrWhiteSpace(_selectedLibrary.Name))
+                {
+                    return string.Format(
+                        "Welcome, {0}!  ---    Managing books for library: {1}",
+                        adminName,
+                        _selectedLibrary.Name);
+                }
+
+                return string.Format(
+                    "Welcome, {0}!  ---    No library selected.",
+                    adminName);
             }
         }
 
@@ -332,7 +345,6 @@ namespace LibraryManagement.ViewModels
             }
         }
 
-
         public string BookSaveButtonText
         {
             get
@@ -375,7 +387,6 @@ namespace LibraryManagement.ViewModels
             get { return !IsBookFormReadOnly; }
         }
 
-
         #endregion
 
         #region Statistics properties
@@ -394,7 +405,6 @@ namespace LibraryManagement.ViewModels
         {
             get { return ActiveRentals?.Count ?? 0; }
         }
-
 
         #endregion
 
@@ -423,7 +433,6 @@ namespace LibraryManagement.ViewModels
                 }
             }
         }
-
 
         public ObservableCollection<Model_Member> MemberOverviewResults
         {
@@ -464,10 +473,8 @@ namespace LibraryManagement.ViewModels
                 {
                     return "No member selected";
                 }
-                else
-                {
-                    return SelectedOverviewMember.FullName;
-                }
+
+                return SelectedOverviewMember.FullName;
             }
         }
 
@@ -479,14 +486,13 @@ namespace LibraryManagement.ViewModels
                 {
                     return "-";
                 }
-                else if (string.IsNullOrWhiteSpace(SelectedOverviewMember.Email))
+
+                if (string.IsNullOrWhiteSpace(SelectedOverviewMember.Email))
                 {
                     return "-";
                 }
-                else
-                {
-                    return SelectedOverviewMember.Email;
-                }
+
+                return SelectedOverviewMember.Email;
             }
         }
 
@@ -498,14 +504,13 @@ namespace LibraryManagement.ViewModels
                 {
                     return "-";
                 }
-                else if (string.IsNullOrWhiteSpace(SelectedOverviewMember.Phone))
+
+                if (string.IsNullOrWhiteSpace(SelectedOverviewMember.Phone))
                 {
                     return "-";
                 }
-                else
-                {
-                    return SelectedOverviewMember.Phone;
-                }
+
+                return SelectedOverviewMember.Phone;
             }
         }
 
@@ -517,14 +522,13 @@ namespace LibraryManagement.ViewModels
                 {
                     return "-";
                 }
-                else if (string.IsNullOrWhiteSpace(SelectedOverviewMember.StudentId))
+
+                if (string.IsNullOrWhiteSpace(SelectedOverviewMember.StudentId))
                 {
                     return "-";
                 }
-                else
-                {
-                    return SelectedOverviewMember.StudentId;
-                }
+
+                return SelectedOverviewMember.StudentId;
             }
         }
 
@@ -536,10 +540,8 @@ namespace LibraryManagement.ViewModels
                 {
                     return 0;
                 }
-                else
-                {
-                    return SelectedMemberActiveRentals.Count;
-                }
+
+                return SelectedMemberActiveRentals.Count;
             }
         }
 
@@ -564,10 +566,8 @@ namespace LibraryManagement.ViewModels
                 {
                     return 0;
                 }
-                else
-                {
-                    return SelectedMemberRentalHistory.Count;
-                }
+
+                return SelectedMemberRentalHistory.Count;
             }
         }
 
@@ -600,29 +600,23 @@ namespace LibraryManagement.ViewModels
             LoadRentalHistory();
         }
 
-
-
         private bool TryGetCurrentLibraryId(out int libraryId)
         {
             libraryId = 0;
 
-            if (_currentLibrarian == null)
+            if (_selectedLibrary == null)
             {
-                BookStatusMessage = "Librarian information not available.";
+                BookStatusMessage = "Library information not available.";
+                RentalStatusMessage = "Library information not available.";
                 return false;
             }
 
-            if (!_currentLibrarian.Library_ID.HasValue)
-            {
-                BookStatusMessage = "This librarian is not assigned to a library. Please contact an administrator.";
-                return false;
-            }
-
-            libraryId = _currentLibrarian.Library_ID.Value;
+            libraryId = _selectedLibrary.Id;
 
             if (libraryId <= 0)
             {
-                BookStatusMessage = "Invalid library assignment.";
+                BookStatusMessage = "Invalid library selection.";
+                RentalStatusMessage = "Invalid library selection.";
                 return false;
             }
 
@@ -655,7 +649,7 @@ namespace LibraryManagement.ViewModels
 
                 if (Books.Count == 0)
                 {
-                    BookStatusMessage = "No books have been added to your library yet.";
+                    BookStatusMessage = "No books have been added to this library yet.";
                 }
                 else
                 {
@@ -681,7 +675,6 @@ namespace LibraryManagement.ViewModels
             }
         }
 
-
         private void LoadActiveRentals()
         {
             try
@@ -691,7 +684,7 @@ namespace LibraryManagement.ViewModels
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
                     ActiveRentals = new ObservableCollection<Model_Rental>();
-                    RentalStatusMessage = "This librarian is not assigned to a library.";
+                    RentalStatusMessage = "No library selected.";
                     return;
                 }
 
@@ -746,7 +739,7 @@ namespace LibraryManagement.ViewModels
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
                     RentalHistory = new ObservableCollection<Model_Rental>();
-                    RentalStatusMessage = "This librarian is not assigned to a library.";
+                    RentalStatusMessage = "No library selected.";
                     return;
                 }
 
@@ -806,7 +799,7 @@ namespace LibraryManagement.ViewModels
 
             if (!string.IsNullOrWhiteSpace(SearchText))
             {
-                var searchLower = SearchText.Trim().ToLower();
+                string searchLower = SearchText.Trim().ToLower();
 
                 filtered = filtered.Where(book =>
                     (book.Title != null && book.Title.ToLower().Contains(searchLower)) ||
@@ -831,7 +824,6 @@ namespace LibraryManagement.ViewModels
                 IsActive = true
             };
         }
-
 
         private void ClearBookForm()
         {
@@ -871,7 +863,6 @@ namespace LibraryManagement.ViewModels
             CommandManager.InvalidateRequerySuggested();
         }
 
-
         private void LoadBookIntoForm(Model_Book bookFromCommand)
         {
             if (bookFromCommand == null)
@@ -906,7 +897,6 @@ namespace LibraryManagement.ViewModels
             BookStatusMessage = "Editing book: " + bookFromCommand.Title;
             CommandManager.InvalidateRequerySuggested();
         }
-
 
         private bool ValidateBook(Model_Book book)
         {
@@ -1009,13 +999,26 @@ namespace LibraryManagement.ViewModels
         {
             try
             {
+                if (IsBookFormReadOnly)
+                {
+                    BookStatusMessage = "Press EDIT before changing book details.";
+
+                    MessageBox.Show(
+                        "Press EDIT before changing book details.",
+                        "Edit Required",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+
+                    return;
+                }
+
                 int libraryId;
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
                     MessageBox.Show(
                         BookStatusMessage,
-                        "Library Assignment Error",
+                        "Library Selection Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
 
@@ -1152,11 +1155,11 @@ namespace LibraryManagement.ViewModels
                 return;
             }
 
-            var selectedBookTitle = SelectedBook.Title;
-            var selectedBookId = SelectedBook.Id;
+            string selectedBookTitle = SelectedBook.Title;
+            int selectedBookId = SelectedBook.Id;
 
             var confirmation = MessageBox.Show(
-                string.Format("Are you sure you want to delete \"{0}\"?\nThis action cannot be undone.", selectedBookTitle),
+                string.Format("Are you sure you want to delete \"{0}\"?\nThis action will hide the book from active lists.", selectedBookTitle),
                 "Confirm Delete",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning);
@@ -1172,7 +1175,7 @@ namespace LibraryManagement.ViewModels
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
-                    BookStatusMessage = "Cannot delete book: Librarian not assigned to a library.";
+                    BookStatusMessage = "Cannot delete book: no library selected.";
                     return;
                 }
 
@@ -1185,11 +1188,11 @@ namespace LibraryManagement.ViewModels
 
                     if (book == null)
                     {
-                        BookStatusMessage = "The selected book no longer exists in your library.";
+                        BookStatusMessage = "The selected book no longer exists in this library.";
                         return;
                     }
 
-                    var hasActiveRentals = db.Rentals.Any(rental =>
+                    bool hasActiveRentals = db.Rentals.Any(rental =>
                         rental.BookId == book.Id &&
                         !rental.ReturnDate.HasValue);
 
@@ -1215,6 +1218,7 @@ namespace LibraryManagement.ViewModels
                 BookStatusMessage = string.Format("Book \"{0}\" has been deleted.", selectedBookTitle);
                 SelectedBook = null;
                 EditingBook = CreateEmptyBookForm();
+                IsBookFormReadOnly = false;
             }
             catch (Exception ex)
             {
@@ -1376,11 +1380,11 @@ namespace LibraryManagement.ViewModels
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
-                    RentalStatusMessage = "Cannot rent book: Librarian not assigned to a library.";
+                    RentalStatusMessage = "Cannot rent book: no library selected.";
 
                     MessageBox.Show(
                         RentalStatusMessage,
-                        "Library Assignment Error",
+                        "Library Selection Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
 
@@ -1403,7 +1407,7 @@ namespace LibraryManagement.ViewModels
 
                             if (book == null)
                             {
-                                RentalStatusMessage = "The selected book no longer exists in your library.";
+                                RentalStatusMessage = "The selected book no longer exists in this library.";
                                 transaction.Rollback();
                                 return;
                             }
@@ -1509,20 +1513,16 @@ namespace LibraryManagement.ViewModels
                                     member.FullName = fullName;
                                 }
 
-                                if (!string.IsNullOrWhiteSpace(email))
+                                if (!string.IsNullOrWhiteSpace(email) &&
+                                    string.IsNullOrWhiteSpace(member.Email))
                                 {
-                                    if (string.IsNullOrWhiteSpace(member.Email))
-                                    {
-                                        member.Email = email;
-                                    }
+                                    member.Email = email;
                                 }
 
-                                if (!string.IsNullOrWhiteSpace(phone))
+                                if (!string.IsNullOrWhiteSpace(phone) &&
+                                    string.IsNullOrWhiteSpace(member.Phone))
                                 {
-                                    if (string.IsNullOrWhiteSpace(member.Phone))
-                                    {
-                                        member.Phone = phone;
-                                    }
+                                    member.Phone = phone;
                                 }
                             }
 
@@ -1574,6 +1574,7 @@ namespace LibraryManagement.ViewModels
 
                 SelectedBook = null;
                 EditingBook = CreateEmptyBookForm();
+                IsBookFormReadOnly = false;
 
                 ClearRentMemberForm();
                 RentalDueDate = DateTime.Now.AddDays(14);
@@ -1592,7 +1593,6 @@ namespace LibraryManagement.ViewModels
                     MessageBoxImage.Error);
             }
         }
-
 
         private void ReturnBook(Model_Rental rentalFromCommand)
         {
@@ -1631,8 +1631,8 @@ namespace LibraryManagement.ViewModels
 
             SelectedRental = rentalToReturn;
 
-            var selectedBookTitle = rentalToReturn.BookTitle;
-            var selectedMemberName = rentalToReturn.MemberName;
+            string selectedBookTitle = rentalToReturn.BookTitle;
+            string selectedMemberName = rentalToReturn.MemberName;
             bool isOverdue = rentalToReturn.DueDate < DateTime.Now;
 
             string confirmationMessage = string.Format(
@@ -1662,7 +1662,7 @@ namespace LibraryManagement.ViewModels
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
-                    RentalStatusMessage = "Cannot return book: Librarian not assigned to a library.";
+                    RentalStatusMessage = "Cannot return book: no library selected.";
                     return;
                 }
 
@@ -1690,7 +1690,7 @@ namespace LibraryManagement.ViewModels
 
                             if (book == null)
                             {
-                                RentalStatusMessage = "The rented book no longer exists in your library.";
+                                RentalStatusMessage = "The rented book no longer exists in this library.";
                                 transaction.Rollback();
                                 return;
                             }
@@ -1798,11 +1798,11 @@ namespace LibraryManagement.ViewModels
 
                     if (!string.IsNullOrWhiteSpace(MemberSearchText))
                     {
-                        var searchLower = MemberSearchText.Trim().ToLower();
+                        string searchLower = MemberSearchText.Trim().ToLower();
 
                         query = query.Where(member =>
-                            member.FullName.ToLower().Contains(searchLower) ||
-                            member.StudentId.ToLower().Contains(searchLower) ||
+                            (member.FullName != null && member.FullName.ToLower().Contains(searchLower)) ||
+                            (member.StudentId != null && member.StudentId.ToLower().Contains(searchLower)) ||
                             (member.Email != null && member.Email.ToLower().Contains(searchLower)));
                     }
 
@@ -1840,7 +1840,6 @@ namespace LibraryManagement.ViewModels
             ShowRentalHistory = !ShowRentalHistory;
         }
 
-
         private static bool IsValidEmailFormat(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -1867,8 +1866,6 @@ namespace LibraryManagement.ViewModels
             RentMemberPhone = string.Empty;
         }
 
-
-
         private static string NormalizeText(string value)
         {
             if (value == null)
@@ -1891,7 +1888,7 @@ namespace LibraryManagement.ViewModels
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
-                    RentalStatusMessage = "Cannot search members: Librarian not assigned to a library.";
+                    RentalStatusMessage = "Cannot search members: no library selected.";
                     return;
                 }
 
@@ -1959,7 +1956,7 @@ namespace LibraryManagement.ViewModels
                     if (members.Count == 0)
                     {
                         ClearSelectedMemberOverview();
-                        RentalStatusMessage = "No member matched this search in your library rentals.";
+                        RentalStatusMessage = "No member matched this search in this library rentals.";
                     }
                     else if (members.Count == 1)
                     {
@@ -1984,7 +1981,6 @@ namespace LibraryManagement.ViewModels
                     MessageBoxImage.Error);
             }
         }
-
 
         private void ClearSelectedMemberOverview()
         {
@@ -2097,7 +2093,7 @@ namespace LibraryManagement.ViewModels
 
                 if (!TryGetCurrentLibraryId(out libraryId))
                 {
-                    RentalStatusMessage = "Cannot load member rentals: Librarian not assigned to a library.";
+                    RentalStatusMessage = "Cannot load member rentals: no library selected.";
                     return;
                 }
 

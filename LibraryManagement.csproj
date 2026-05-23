@@ -52,6 +52,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>LibraryManagement.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll</HintPath>
@@ -98,6 +101,9 @@
     <Compile Include="UserControllers\Admin_UserControllers\Administrator_UserManagement.xaml.cs">
       <DependentUpon>Administrator_UserManagement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControllers\Admin_UserControllers\AdminLibraryBooks_UserController.xaml.cs">
+      <DependentUpon>AdminLibraryBooks_UserController.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControllers\Admin_UserControllers\Admin_UserController.xaml.cs">
       <DependentUpon>Admin_UserController.xaml</DependentUpon>
     </Compile>
@@ -108,6 +114,7 @@
       <DependentUpon>Librarian_UserController.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Administrator_viewmodels\AdminAccountsManagementViewModel.cs" />
+    <Compile Include="ViewModels\Administrator_viewmodels\AdminLibraryBooksViewModel.cs" />
     <Compile Include="ViewModels\Administrator_viewmodels\AdminLibraryManagementViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\Librarian_viewmodels\Librarian_LibraryManagement_ViewModel.cs" />
@@ -158,6 +165,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControllers\Admin_UserControllers\AdminLibraryBooks_UserController.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControllers\Admin_UserControllers\Admin_UserController.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -205,6 +216,7 @@
       <DependentUpon>Database.mdf</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="LibraryManagement.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

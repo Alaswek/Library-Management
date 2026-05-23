@@ -57,9 +57,11 @@ namespace LibraryManagement.Views
             var libraryView = new Admin_UserController(_currentUser);
 
             libraryView.OpenUserManagementRequested += ShowAdminUserManagement;
+            libraryView.OpenLibraryBooksRequested += ShowAdminLibraryBooksManagement;
 
             MainContentArea.Content = libraryView;
         }
+
 
         private void ShowAdminUserManagement()
         {
@@ -69,6 +71,7 @@ namespace LibraryManagement.Views
 
             MainContentArea.Content = userManagementView;
         }
+
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -105,6 +108,26 @@ namespace LibraryManagement.Views
                     db.SaveChanges();
                 }
             }
+        }
+
+        private void ShowAdminLibraryBooksManagement(Model_Library selectedLibrary)
+        {
+            if (selectedLibrary == null)
+            {
+                MessageBox.Show(
+                    "Please select a library first.",
+                    "No Library Selected",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+
+                return;
+            }
+
+            var booksView = new AdminLibraryBooks_UserController(_currentUser, selectedLibrary);
+
+            booksView.BackToLibrariesRequested += ShowAdminLibraryManagement;
+
+            MainContentArea.Content = booksView;
         }
     }
 }

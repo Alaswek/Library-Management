@@ -310,7 +310,7 @@
                                             Width="80"/>
 
                     <DataGridTemplateColumn Header="Actions"
-                                            Width="240">
+                                            Width="SizeToCells">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
