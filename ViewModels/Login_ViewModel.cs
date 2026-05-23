@@ -3,10 +3,7 @@ using LibraryManagement.Data;
 using LibraryManagement.Views;
 using LibraryManagement.MVVM;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using LibraryManagement.Models;
@@ -32,7 +29,7 @@ namespace LibraryManagement.ViewModels
         private string show_ErrorMessage;
         public string Show_ErrorMessage
         {
-            get => show_ErrorMessage;
+            get { return show_ErrorMessage; }
             set { show_ErrorMessage = value; OnPropertyChanged(); }
         }
 
@@ -50,22 +47,37 @@ namespace LibraryManagement.ViewModels
             Login_command = new RelayCommand(_ => DoLogin());
         }
 
-
         public void DoLogin()
         {
             using (var db = new LibraryDbContext())
             {
                 try
                 {
-                    // Verificăm dacă există măcar un user în tabel
+                    Show_ErrorMessage = string.Empty;
+
+                    if (string.IsNullOrWhiteSpace(Username))
+                    {
+                        Show_ErrorMessage = "Username is required!";
+                        return;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(Password))
+                    {
+                        Show_ErrorMessage = "Password is required!";
+                        return;
+                    }
+
                     var totalUsers = db.Users.Count();
+
                     if (totalUsers == 0)
                     {
                         Show_ErrorMessage = "Baza de date este goala!";
                         return;
                     }
 
-                    var user = db.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password);
+                    var user = db.Users.FirstOrDefault(u =>
+                        u.Username == Username &&
+                        u.Password == Password);
 
                     if (user == null)
                     {
@@ -73,29 +85,34 @@ namespace LibraryManagement.ViewModels
                         return;
                     }
 
-                    // ToDo:
-                    // La login verificam daca "user.Role" este administrator sau librarian
-                    // daca e administrator atunci randam in Application_MainWindow un usercontroller pentru admin,
-                    // daca e librarian atunci randam un usercontroller pentru librarian
+                    if (user.IsActive == true)
+                    {
+                        Show_ErrorMessage = "This account is already logged in. Please log out first.";
+                        return;
+                    }
 
-                    // Succes (will be deleted from here)
                     user.IsActive = true;
                     db.SaveChanges();
 
                     CurrentUser = user;
+
                     Application_MainWindow mainWin = new Application_MainWindow(CurrentUser);
                     mainWin.Show();
 
-                    // Închide fereastra corectă (LoginAppl_Window) dupa login
-                    Application.Current.Windows.OfType<LoginAppl_Window>().FirstOrDefault()?.Close();
+                    var loginWindow = Application.Current.Windows
+                        .OfType<LoginAppl_Window>()
+                        .FirstOrDefault();
+
+                    if (loginWindow != null)
+                    {
+                        loginWindow.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Eroare DB: " + ex.Message);
                 }
             }
-
         }
-
     }
 }

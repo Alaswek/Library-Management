@@ -44,10 +44,56 @@ namespace LibraryManagement.Models
             set { _address = value; OnPropertyChanged(); }
         }
 
+        [NotMapped]
         public bool IsOpen
         {
-            get { return _isOpen; }
-            set { _isOpen = value; OnPropertyChanged(); }
+            get { return IsOpenNow(); }
+        }
+
+        [NotMapped]
+        public string Status
+        {
+            get
+            {
+                if (IsOpen)
+                {
+                    return "Open";
+                }
+
+                return "Closed";
+            }
+        }
+
+        private bool IsOpenNow()
+        {
+            if (string.IsNullOrWhiteSpace(OpeningHours))
+            {
+                return false;
+            }
+
+            string[] parts = OpeningHours.Split('-');
+
+            if (parts.Length != 2)
+            {
+                return false;
+            }
+
+            TimeSpan startTime;
+            TimeSpan endTime;
+
+            if (!TimeSpan.TryParse(parts[0], out startTime))
+            {
+                return false;
+            }
+
+            if (!TimeSpan.TryParse(parts[1], out endTime))
+            {
+                return false;
+            }
+
+            TimeSpan currentTime = DateTime.Now.TimeOfDay;
+
+            return currentTime >= startTime && currentTime <= endTime;
         }
 
         public virtual ICollection<Model_Book> Books

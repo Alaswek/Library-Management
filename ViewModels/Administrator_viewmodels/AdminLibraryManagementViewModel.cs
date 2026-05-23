@@ -19,7 +19,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
         private int _editingLibraryId;
         private string _libraryName;
         private string _libraryAddress;
-        private bool _isOpen;
         private string _libraryStatusMessage;
         private string _openingHours;
         private bool _isInitialized;
@@ -111,12 +110,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
         {
             get { return _libraryAddress; }
             set { SetProperty(ref _libraryAddress, value); }
-        }
-
-        public bool IsOpen
-        {
-            get { return _isOpen; }
-            set { SetProperty(ref _isOpen, value); }
         }
 
         public string LibraryStatusMessage
@@ -268,6 +261,12 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                 return;
             }
 
+            if (!IsValidOpeningHours(openingHours))
+            {
+                LibraryStatusMessage = "Opening hours must use format HH:mm-HH:mm, for example 08:00-20:00.";
+                return;
+            }
+
             try
             {
                 bool wasEditMode = _editingLibraryId > 0;
@@ -310,7 +309,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     library.Name = name;
                     library.Address = address;
                     library.OpeningHours = openingHours;
-                    library.IsOpen = IsOpen;
 
                     db.SaveChanges();
                 }
@@ -367,7 +365,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             LibraryName = libraryToEdit.Name;
             LibraryAddress = libraryToEdit.Address;
             OpeningHours = libraryToEdit.OpeningHours;
-            IsOpen = libraryToEdit.IsOpen;
 
             LibraryStatusMessage = string.Format("Editing library: {0}", libraryToEdit.Name);
 
@@ -478,7 +475,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             LibraryAddress = string.Empty;
             OpeningHours = string.Empty;
 
-            IsOpen = true;
 
             SelectedLibrary = null;
 
@@ -486,6 +482,100 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             OnPropertyChanged(nameof(FormTitle));
 
             RefreshCommandStates();
+        }
+
+        private static bool IsValidOpeningHours(string openingHours)
+        {
+            if (string.IsNullOrWhiteSpace(openingHours))
+            {
+                return false;
+            }
+
+            string[] intervalParts = openingHours.Split('-');
+
+            if (intervalParts.Length != 2)
+            {
+                return false;
+            }
+
+            string startText = intervalParts[0];
+            string endText = intervalParts[1];
+
+            string[] startParts = startText.Split(':');
+            string[] endParts = endText.Split(':');
+
+            if (startParts.Length != 2 || endParts.Length != 2)
+            {
+                return false;
+            }
+
+            if (startParts[0].Length != 2 ||
+                startParts[1].Length != 2 ||
+                endParts[0].Length != 2 ||
+                endParts[1].Length != 2)
+            {
+                return false;
+            }
+
+            int startHour;
+            int startMinute;
+            int endHour;
+            int endMinute;
+
+            if (!int.TryParse(startParts[0], out startHour))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(startParts[1], out startMinute))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(endParts[0], out endHour))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(endParts[1], out endMinute))
+            {
+                return false;
+            }
+
+            if (startHour < 0 || startHour > 23)
+            {
+                return false;
+            }
+
+            if (startMinute < 0 || startMinute > 59)
+            {
+                return false;
+            }
+
+            if (endHour < 0 || endHour > 24)
+            {
+                return false;
+            }
+
+            if (endMinute < 0 || endMinute > 59)
+            {
+                return false;
+            }
+
+            if (endHour == 24 && endMinute != 0)
+            {
+                return false;
+            }
+
+            int startTotalMinutes = startHour * 60 + startMinute;
+            int endTotalMinutes = endHour * 60 + endMinute;
+
+            if (startTotalMinutes >= endTotalMinutes)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private static string Normalize(string value)

@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="Transparent">
+        Background="Transparent"
+        ResizeMode="NoResize">
 
     <Grid MouseDown="Border_MouseDown"
           Background="Transparent">
@@ -18,7 +19,7 @@
         <Border Background="#1E1E1E"
                 CornerRadius="18"
                 Width="760"
-                Height="460"
+                Height="470"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
 
@@ -43,6 +44,7 @@
 
                     <Grid>
                         <StackPanel VerticalAlignment="Center">
+
                             <TextBlock Text="LIBRARY"
                                        Foreground="#3498DB"
                                        FontSize="34"
@@ -67,6 +69,7 @@
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        LineHeight="20"/>
+
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -78,73 +81,60 @@
                         Padding="35">
 
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
 
                         <!-- WINDOW BUTTONS -->
-                        <DockPanel Grid.Row="0"
-                                   LastChildFill="False"
-                                   HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top">
 
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="btnMinimize"
-                                        Width="35"
-                                        Height="35"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Click="btnMinimize_Click"
-                                        Cursor="Hand">
-                                    <Rectangle Width="12"
-                                               Height="2"
-                                               Fill="White"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"/>
-                                </Button>
+                            <Button x:Name="btnMinimize"
+                                    Width="35"
+                                    Height="35"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="btnMinimize_Click"
+                                    Cursor="Hand">
 
-                                <Button x:Name="btnMaximize"
-                                        Content="☐"
-                                        Width="35"
-                                        Height="35"
-                                        Background="Transparent"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        Click="btnMaximize_Click"
-                                        VerticalContentAlignment="Center"
-                                        FontSize="16"
-                                        Cursor="Hand"/>
+                                <Rectangle Width="12"
+                                           Height="2"
+                                           Fill="White"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                            </Button>
 
-                                <Button x:Name="btnClose"
-                                        Content="✕"
-                                        Width="35"
-                                        Height="35"
-                                        Background="Transparent"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        Click="btnClose_Click"
-                                        VerticalContentAlignment="Center"
-                                        FontSize="16"
-                                        Cursor="Hand"/>
-                            </StackPanel>
-                        </DockPanel>
+                            
+                            <Button x:Name="btnClose"
+                                    Content="✕"
+                                    Width="35"
+                                    Height="35"
+                                    Background="Transparent"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Click="btnClose_Click"
+                                    VerticalContentAlignment="Center"
+                                    FontSize="16"
+                                    Cursor="Hand"/>
+                        </StackPanel>
 
                         <!-- LOGIN FORM -->
-                        <StackPanel Grid.Row="1"
+                        <StackPanel Width="360"
+                                    HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Margin="10,0,10,0">
+                                    Margin="0,18,0,0">
 
                             <TextBlock Text="Login"
                                        FontSize="38"
                                        FontWeight="Bold"
-                                       HorizontalAlignment="Left"
+                                       HorizontalAlignment="Center"
                                        Foreground="#3498DB"
                                        Margin="0,0,0,8"/>
 
                             <TextBlock Text="Enter your username and password"
                                        Foreground="#BFBFBF"
                                        FontSize="13"
-                                       Margin="0,0,0,30"/>
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,28"/>
 
                             <TextBlock Text="Username"
                                        Foreground="White"
@@ -158,21 +148,45 @@
                                      BorderBrush="#3F3F46"
                                      VerticalContentAlignment="Center"
                                      Padding="12,0"
-                                     Margin="0,0,0,18"/>
+                                     Margin="0,0,0,16"/>
 
                             <TextBlock Text="Password"
                                        Foreground="White"
                                        Margin="0,0,0,6"/>
 
-                            <PasswordBox x:Name="passBox"
+                            <!-- PASSWORD FIELD + SHOW PASSWORD FIELD -->
+                            <Grid Margin="0,0,0,8">
+
+                                <PasswordBox x:Name="passBox"
+                                             Height="40"
+                                             PasswordChanged="passBox_PasswordChanged"
+                                             Background="#333337"
+                                             Foreground="White"
+                                             BorderBrush="#3F3F46"
+                                             VerticalContentAlignment="Center"
+                                             Padding="12,0"
+                                             Visibility="Visible"/>
+
+                                <TextBox x:Name="visiblePassBox"
                                          Height="40"
-                                         PasswordChanged="passBox_PasswordChanged"
+                                         TextChanged="visiblePassBox_TextChanged"
                                          Background="#333337"
                                          Foreground="White"
                                          BorderBrush="#3F3F46"
                                          VerticalContentAlignment="Center"
                                          Padding="12,0"
-                                         Margin="0,0,0,12"/>
+                                         Visibility="Collapsed"/>
+
+                            </Grid>
+
+                            <CheckBox x:Name="showPasswordCheckBox"
+                                      Content="Show Password"
+                                      Foreground="#BFBFBF"
+                                      FontSize="12"
+                                      HorizontalAlignment="Left"
+                                      Margin="0,0,0,0"
+                                      Checked="showPasswordCheckBox_Checked"
+                                      Unchecked="showPasswordCheckBox_Unchecked"/>
 
                             <TextBlock Text="{Binding Show_ErrorMessage, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                        HorizontalAlignment="Left"
@@ -180,12 +194,13 @@
                                        FontWeight="SemiBold"
                                        Foreground="#FF5C5C"
                                        TextWrapping="Wrap"
-                                       MinHeight="22"
-                                       Margin="0,0,0,18"/>
+                                       MinHeight="14"
+                                       Margin="0,0,0,16"/>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="12"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
@@ -195,8 +210,7 @@
                                         Foreground="White"
                                         FontWeight="Bold"
                                         Height="45"
-                                        Width="220"
-                                        HorizontalAlignment="Left"
+                                        HorizontalAlignment="Stretch"
                                         Cursor="Hand"
                                         Click="ResetPasswordWithCode_Click">
 
@@ -207,13 +221,13 @@
                                     </Button.Resources>
                                 </Button>
 
-                                <Button Grid.Column="1"
+                                <Button Grid.Column="2"
                                         Content="LOGIN"
                                         Background="#007ACC"
                                         Foreground="White"
                                         FontWeight="Bold"
                                         Height="45"
-                                        Width="135"
+                                        Width="120"
                                         HorizontalAlignment="Right"
                                         Cursor="Hand"
                                         Command="{Binding Login_command}">
@@ -225,6 +239,7 @@
                                     </Button.Resources>
                                 </Button>
                             </Grid>
+
                         </StackPanel>
                     </Grid>
                 </Border>

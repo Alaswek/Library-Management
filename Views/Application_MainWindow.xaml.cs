@@ -10,6 +10,7 @@ namespace LibraryManagement.Views
     public partial class Application_MainWindow : Window
     {
         private Model_User _currentUser;
+        private bool _isReturningToLogin = false;
 
         public Application_MainWindow(Model_User user)
         {
@@ -71,8 +72,24 @@ namespace LibraryManagement.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            base.OnClosing(e);
+            SetCurrentUserInactive();
 
+            if (!_isReturningToLogin)
+            {
+                _isReturningToLogin = true;
+
+                var loginWindow = new LoginAppl_Window();
+
+                Application.Current.MainWindow = loginWindow;
+
+                loginWindow.Show();
+            }
+
+            base.OnClosing(e);
+        }
+
+        private void SetCurrentUserInactive()
+        {
             if (_currentUser == null)
             {
                 return;

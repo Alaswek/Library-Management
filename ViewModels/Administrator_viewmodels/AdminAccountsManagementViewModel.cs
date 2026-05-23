@@ -493,7 +493,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     Username = trimmedUsername,
                     Password = AccountPassword,
                     Role = "Librarian",
-                    IsActive = IsAccountActive,
+                    IsActive = false,
                     Library_ID = SelectedAccountLibraryId
                 };
 
@@ -508,7 +508,7 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                     Username = trimmedUsername,
                     Password = AccountPassword,
                     Role = "Administrator",
-                    IsActive = IsAccountActive,
+                    IsActive = false,
                     Library_ID = null
                 };
 
@@ -566,19 +566,17 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                 try
                 {
                     db.Database.ExecuteSqlCommand(
-                        @"UPDATE [dbo].[Users]
-                          SET [Username] = @p0,
-                              [Password] = @p1,
-                              [Role] = @p2,
-                              [IsActive] = @p3,
-                              [Library_ID] = @p4
-                          WHERE [Id] = @p5",
-                        trimmedUsername,
-                        passwordToSave,
-                        normalizedRole,
-                        IsAccountActive,
-                        targetLibraryValue,
-                        _editingAccountId);
+                    @"UPDATE [dbo].[Users]
+                      SET [Username] = @p0,
+                          [Password] = @p1,
+                          [Role] = @p2,
+                          [Library_ID] = @p3
+                      WHERE [Id] = @p4",
+                    trimmedUsername,
+                    passwordToSave,
+                    normalizedRole,
+                    targetLibraryValue,
+                    _editingAccountId);
 
                     if (IsLibrarianRole(normalizedRole))
                     {
@@ -661,7 +659,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
                 SelectedAccountLibraryId = 0;
             }
 
-            IsAccountActive = accountToEdit.IsActive;
             AccountStatusMessage = string.Format("Editing account: {0}", accountToEdit.Username);
 
             OnPropertyChanged(nameof(IsAccountEditMode));
@@ -896,7 +893,6 @@ namespace LibraryManagement.ViewModels.Administrator_viewmodels
             AccountPassword = string.Empty;
             SelectedRole = "Librarian";
             SelectedAccountLibraryId = 0;
-            IsAccountActive = true;
             SelectedAccount = null;
 
             OnPropertyChanged(nameof(IsAccountEditMode));

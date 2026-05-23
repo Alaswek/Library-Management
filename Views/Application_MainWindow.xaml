@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryManagement.Views"
         mc:Ignorable="d"
-        Title="LibraryManagement" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="LibraryManagement" 
+        Height="450" Width="800" 
+        MinWidth="1100" MinHeight="760"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid>
         <ContentControl x:Name="MainContentArea" />
     </Grid>

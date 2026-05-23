@@ -77,10 +77,6 @@
                          Padding="5,0"
                          Margin="0,0,0,15"/>
 
-                <CheckBox Content="Library is open"
-                          IsChecked="{Binding IsOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Foreground="White"
-                          Margin="0,0,0,25"/>
 
                 <Button Content="SAVE"
                         Height="40"
@@ -237,9 +233,7 @@
                                         Binding="{Binding OpeningHours}"
                                         Width="130"/>
 
-                    <DataGridCheckBoxColumn Header="Open"
-                                            Binding="{Binding IsOpen}"
-                                            Width="80"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
 
                     <DataGridTemplateColumn Header="Actions"
                                             Width="160">
