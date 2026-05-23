@@ -6,357 +6,1101 @@
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="1200"
-             Background="#1E1E1E">
+             MinWidth="1050"
+             MinHeight="700"
+             Background="#1E1E1E"
+             Loaded="UserControl_Loaded">
 
-	<Grid Margin="15">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="350"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="330" MinWidth="300"/>
+            <ColumnDefinition Width="*" MinWidth="650"/>
+        </Grid.ColumnDefinitions>
 
-		<!-- Left Panel - Book Management -->
-		<Border Grid.Column="0"
+        <!-- LEFT PANEL -->
+        <Border Grid.Column="0"
                 Background="#252526"
                 CornerRadius="5"
                 Padding="15"
                 Margin="0,0,15,0">
 
-			<StackPanel>
-				<TextBlock Text="BOOK MANAGEMENT"
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                           Text="BOOK MANAGEMENT"
                            Foreground="#3498DB"
                            FontSize="16"
                            FontWeight="Bold"
-                           Margin="0,0,0,20"
+                           Margin="0,0,0,14"
                            HorizontalAlignment="Center"/>
 
-				<TextBlock Text="SELECTED BOOK"
-                           Foreground="White"
-                           FontSize="14"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,15"
-                           HorizontalAlignment="Center"/>
-
-				<Border Background="#333337"
+                    <!-- BOOK FORM -->
+                    <Border Grid.Row="1"
+                        Background="#333337"
                         Padding="10"
                         CornerRadius="5"
-                        Margin="0,0,0,15">
+                        Margin="0,0,0,10">
 
-					<StackPanel>
-						<TextBlock Text="Title:"
-                                   Foreground="#888888"
-                                   FontSize="11"/>
-
-						<TextBlock Text="{Binding SelectedBook.Title, FallbackValue='No book selected'}"
+                        <StackPanel>
+                            <TextBlock Text="Title:"
                                    Foreground="White"
-                                   FontWeight="Bold"
-                                   TextWrapping="Wrap"
-                                   Margin="0,2,0,10"/>
+                                   Margin="0,0,0,5"/>
 
-						<TextBlock Text="Author:"
-                                   Foreground="#888888"
-                                   FontSize="11"/>
+                            <TextBox Height="30"
+                                 Text="{Binding EditingBook.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="#252526"
+                                 Foreground="White"
+                                 BorderBrush="#3F3F46"
+                                 VerticalContentAlignment="Center"
+                                 Padding="5,0"
+                                 Margin="0,0,0,10"/>
 
-						<TextBlock Text="{Binding SelectedBook.Author, FallbackValue='-'}"
+                            <TextBlock Text="Author:"
                                    Foreground="White"
-                                   Margin="0,2,0,10"/>
+                                   Margin="0,0,0,5"/>
 
-						<Grid Margin="0,5,0,0">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
+                            <TextBox Height="30"
+                                 Text="{Binding EditingBook.Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="#252526"
+                                 Foreground="White"
+                                 BorderBrush="#3F3F46"
+                                 VerticalContentAlignment="Center"
+                                 Padding="5,0"
+                                 Margin="0,0,0,10"/>
 
-							<StackPanel Grid.Column="0">
-								<TextBlock Text="Total copies:"
-                                           Foreground="#888888"
-                                           FontSize="11"/>
-								<TextBlock Text="{Binding SelectedBook.Quantity, FallbackValue='0'}"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Quantity:"
                                            Foreground="White"
-                                           FontWeight="Bold"/>
-							</StackPanel>
+                                           Margin="0,0,0,5"/>
 
-							<StackPanel Grid.Column="1">
-								<TextBlock Text="Available:"
-                                           Foreground="#888888"
-                                           FontSize="11"/>
-								<TextBlock Text="{Binding SelectedBook.AvailableQuantity, FallbackValue='0'}"
-                                           Foreground="#27AE60"
-                                           FontWeight="Bold"/>
-							</StackPanel>
-						</Grid>
-					</StackPanel>
-				</Border>
+                                    <TextBox Height="30"
+                                         Text="{Binding EditingBook.Quantity, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                         Background="#252526"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"/>
+                                </StackPanel>
 
-				<Button Content="ADD NEW BOOK"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        Background="#2D7D46"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding AddBookCommand}"/>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Available:"
+                                           Foreground="White"
+                                           Margin="0,0,0,5"/>
 
-				<Button Content="EDIT SELECTED BOOK"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        Background="#F39C12"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding EditBookCommand}"/>
+                                    <TextBox Height="30"
+                                         Text="{Binding EditingBook.AvailableQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsReadOnly="True"
+                                         Background="#252526"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-				<Button Content="DELETE SELECTED BOOK"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        Background="#C42B1C"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding DeleteBookCommand}"/>
+                    <!-- BOOK BUTTONS -->
+                    <StackPanel Grid.Row="2">
 
-				<Separator Margin="0,20,0,15"/>
-
-				<TextBlock Text="RENT BOOK"
-                           Foreground="#3498DB"
-                           FontSize="14"
-                           FontWeight="Bold"
-                           Margin="0,0,0,15"
-                           HorizontalAlignment="Center"/>
-
-				<TextBlock Text="Select Member:"
-                           Foreground="White"
-                           Margin="0,0,0,5"/>
-
-				<ComboBox Height="30"
-                          ItemsSource="{Binding Members}"
-                          DisplayMemberPath="FullName"
-                          SelectedItem="{Binding SelectedMember}"
-                          Background="#333337"
-                          Foreground="White"
-                          BorderBrush="#3F3F46"
-                          VerticalContentAlignment="Center"
-                          Padding="5,0"
-                          Margin="0,0,0,15"/>
-
-				<TextBlock Text="Due Date:"
-                           Foreground="White"
-                           Margin="0,0,0,5"/>
-
-				<DatePicker SelectedDate="{Binding RentalDueDate}"
-                            Height="30"
-                            Background="#333337"
+                        <Button Content="SAVE"
+                            Height="36"
+                            Margin="0,0,0,8"
+                            Background="#2D7D46"
                             Foreground="White"
-                            BorderBrush="#3F3F46"
-                            VerticalContentAlignment="Center"
-                            Margin="0,0,0,15"/>
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Command="{Binding SaveBookCommand}"/>
 
-				<Button Content="RENT BOOK"
-                        Height="40"
-                        Background="#2D7D46"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding RentBookCommand}"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-				<Separator Margin="0,20,0,15"/>
+                            <Button Grid.Column="0"
+                                Content="CLEAR"
+                                Height="36"
+                                Background="#3E3E42"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding CancelBookCommand}"/>
 
-				<Button Content="REFRESH DATA"
-                        Height="35"
-                        Margin="0,0,0,10"
-                        Background="#007ACC"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Cursor="Hand"
-                        Command="{Binding RefreshDataCommand}"/>
-			</StackPanel>
-		</Border>
+                            <Button Grid.Column="2"
+                                Content="DELETE SELECTED"
+                                Height="36"
+                                Background="#C42B1C"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding DeleteBookCommand}"/>
+                        </Grid>
+                    </StackPanel>
 
-		<!-- Right Panel - Books and Rentals -->
-		<Grid Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+                    <Separator Grid.Row="3"
+                           Margin="0,8,0,10"/>
 
-			<!-- Welcome Banner -->
-			<Border Grid.Row="0"
-                    Background="#252526"
-                    Padding="10"
-                    CornerRadius="5"
-                    Margin="0,0,0,15">
+                    <!-- RENT BOOK -->
+                    <StackPanel Grid.Row="4">
 
-				<TextBlock Text="{Binding WelcomeMessage}"
-                           Foreground="White"
-                           FontSize="14"
-                           FontWeight="Bold"/>
-			</Border>
+                        <TextBlock Text="RENT BOOK"
+                               Foreground="#3498DB"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
 
-			<!-- Search and Filter Bar -->
-			<Border Grid.Row="1"
-                    Background="#252526"
-                    Padding="10"
-                    CornerRadius="5"
-                    Margin="0,0,0,15">
+                        <TextBlock Foreground="White"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,10">
+                        <Run Text="Book selected: "/>
+                        <Run Text="{Binding SelectedBook.Title, Mode=OneWay, TargetNullValue='No book selected', FallbackValue='No book selected'}"/>
+                        </TextBlock>
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="150"/>
-						<ColumnDefinition Width="Auto"/>
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-
-					<TextBlock Grid.Column="0"
-                               Text="Category:"
+                        <TextBlock Text="Full Name:"
                                Foreground="White"
-                               VerticalAlignment="Center"
-                               Margin="0,0,8,0"/>
+                               Margin="0,0,0,5"/>
 
-					<ComboBox Grid.Column="1"
-                              Height="30"
-                              ItemsSource="{Binding Categories}"
-                              SelectedItem="{Binding SelectedCategory}"
-                              Background="#333337"
-                              Foreground="White"
-                              BorderBrush="#3F3F46"
-                              VerticalContentAlignment="Center"
-                              Padding="5,0"/>
-
-					<TextBlock Grid.Column="2"
-                               Text="Search:"
-                               Foreground="White"
-                               VerticalAlignment="Center"
-                               Margin="15,0,8,0"/>
-
-					<TextBox Grid.Column="3"
-                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                             Height="30"
+                        <TextBox Height="30"
+                             Text="{Binding RentMemberFullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Background="#333337"
                              Foreground="White"
                              BorderBrush="#3F3F46"
                              VerticalContentAlignment="Center"
                              Padding="5,0"
-                             ToolTip="Search by title or author"/>
-				</Grid>
-			</Border>
+                             Margin="0,0,0,10"/>
 
-			<!-- Statistics Bar -->
-			<Border Grid.Row="2"
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Email:"
+                                       Foreground="White"
+                                       Margin="0,0,0,5"/>
+
+                                <TextBox Height="30"
+                                     Text="{Binding RentMemberEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="#333337"
+                                     Foreground="White"
+                                     BorderBrush="#3F3F46"
+                                     VerticalContentAlignment="Center"
+                                     Padding="5,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Phone:"
+                                       Foreground="White"
+                                       Margin="0,0,0,5"/>
+
+                                <TextBox Height="30"
+                                     Text="{Binding RentMemberPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Background="#333337"
+                                     Foreground="White"
+                                     BorderBrush="#3F3F46"
+                                     VerticalContentAlignment="Center"
+                                     Padding="5,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <TextBlock Text="Due Date:"
+                               Foreground="White"
+                               Margin="0,0,0,5"/>
+
+                        <DatePicker SelectedDate="{Binding RentalDueDate, Mode=TwoWay}"
+                            SelectedDateFormat="Short"
+                            Height="30"
+                            Background="White"
+                            Foreground="Black"
+                            BorderBrush="#3F3F46"
+                            VerticalContentAlignment="Center"
+                            Margin="0,0,0,10"/>
+
+                        <Button Content="RENT BOOK"
+                            Height="36"
+                            Background="#2D7D46"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Command="{Binding RentBookCommand}"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="5"
+                        Content="REFRESH DATA"
+                        Height="34"
+                        Margin="0,10,0,0"
+                        Background="#007ACC"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding RefreshDataCommand}"/>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- RIGHT PANEL -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- WELCOME -->
+            <Border Grid.Row="0"
                     Background="#252526"
                     Padding="10"
                     CornerRadius="5"
                     Margin="0,0,0,15">
 
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Foreground="White" Margin="0,0,25,0">
-						<Run Text="Total Books: "/>
-						<Run Text="{Binding TotalBooks, Mode=OneWay}"/>
-					</TextBlock>
-
-					<TextBlock Foreground="White" Margin="0,0,25,0">
-						<Run Text="Available: "/>
-						<Run Text="{Binding AvailableBooksCount, Mode=OneWay}"/>
-					</TextBlock>
-
-					<TextBlock Foreground="White" Margin="0,0,25,0">
-						<Run Text="Active Rentals: "/>
-						<Run Text="{Binding ActiveRentalsCount, Mode=OneWay}"/>
-					</TextBlock>
-
-					<TextBlock Foreground="White">
-						<Run Text="Status: "/>
-						<Run Text="{Binding BookStatusMessage, Mode=OneWay}"/>
-					</TextBlock>
-				</StackPanel>
-			</Border>
-
-			<!-- Books DataGrid -->
-			<DataGrid Grid.Row="3"
-                      ItemsSource="{Binding FilteredBooks}"
-                      SelectedItem="{Binding SelectedBook}"
-                      SelectionMode="Single"
-                      SelectionUnit="FullRow"
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      IsReadOnly="True"
-                      Background="#252526"
-                      Foreground="Black"
-                      RowBackground="#2D2D2D"
-                      AlternatingRowBackground="#333337"
-                      BorderThickness="1"
-                      BorderBrush="#3F3F46"
-                      HeadersVisibility="Column"
-                      GridLinesVisibility="None"
-                      Margin="0,0,0,15">
-
-				<DataGrid.Resources>
-					<Style TargetType="DataGridColumnHeader">
-						<Setter Property="Background" Value="#3E3E42"/>
-						<Setter Property="Foreground" Value="White"/>
-						<Setter Property="Padding" Value="10,5"/>
-						<Setter Property="FontWeight" Value="Bold"/>
-					</Style>
-
-					<Style TargetType="DataGridCell">
-						<Setter Property="Foreground" Value="White"/>
-						<Setter Property="Background" Value="Transparent"/>
-						<Setter Property="BorderBrush" Value="#3F3F46"/>
-					</Style>
-				</DataGrid.Resources>
-
-				<DataGrid.Columns>
-					<DataGridTextColumn Header="ID"
-                                        Binding="{Binding Id}"
-                                        Width="60"/>
-
-					<DataGridTextColumn Header="Title"
-                                        Binding="{Binding Title}"
-                                        Width="200"/>
-
-					<DataGridTextColumn Header="Author"
-                                        Binding="{Binding Author}"
-                                        Width="180"/>
-
-					<DataGridTextColumn Header="Total"
-                                        Binding="{Binding Quantity}"
-                                        Width="70"/>
-
-					<DataGridTextColumn Header="Available"
-                                        Binding="{Binding AvailableQuantity}"
-                                        Width="80"/>
-
-					<DataGridTemplateColumn Header="Delete" Width="80">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<Button Content="Delete"
-                                        Command="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}"
-                                        Background="#C42B1C"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        Padding="8,3"
-                                        Cursor="Hand"
-                                        FontSize="11"/>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-				</DataGrid.Columns>
-			</DataGrid>
-
-			<!-- Status Message Bar -->
-			<Border Grid.Row="4"
-                    Background="#252526"
-                    Padding="10"
-                    CornerRadius="5">
-
-				<TextBlock Text="{Binding RentalStatusMessage, Mode=OneWay}"
+                <TextBlock Text="{Binding WelcomeMessage}"
                            Foreground="White"
+                           FontSize="14"
                            FontWeight="Bold"
                            TextWrapping="Wrap"/>
-			</Border>
-		</Grid>
-	</Grid>
+            </Border>
+
+            <!-- STATISTICS -->
+            <Border Grid.Row="1"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5"
+                    Margin="0,0,0,15">
+
+                <WrapPanel>
+                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                        <Run Text="Total Books: "/>
+                        <Run Text="{Binding TotalBooks, Mode=OneWay}"/>
+                    </TextBlock>
+
+                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                        <Run Text="Available: "/>
+                        <Run Text="{Binding AvailableBooksCount, Mode=OneWay}"/>
+                    </TextBlock>
+
+                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                        <Run Text="Active Rentals: "/>
+                        <Run Text="{Binding ActiveRentalsCount, Mode=OneWay}"/>
+                    </TextBlock>
+                </WrapPanel>
+            </Border>
+
+            <!-- MAIN TABS -->
+            <TabControl x:Name="MainTabControl"
+                        Grid.Row="2"
+                        Background="#1E1E1E"
+                        BorderBrush="#3F3F46"
+                        SelectionChanged="MainTabControl_SelectionChanged">
+
+                <!-- BOOKS TAB -->
+                <TabItem Header="Books">
+                    <Grid Background="#1E1E1E" Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- SEARCH BOOKS -->
+                        <Border Grid.Row="0"
+                        Background="#252526"
+                        Padding="10"
+                        CornerRadius="5"
+                        Margin="0,0,0,15">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                   Text="Search:"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+
+                                <TextBox Grid.Column="1"
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                 Height="30"
+                 Background="#333337"
+                 Foreground="White"
+                 BorderBrush="#3F3F46"
+                 VerticalContentAlignment="Center"
+                 Padding="5,0"
+                 ToolTip="Search by title or author"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- BOOKS DATAGRID -->
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding FilteredBooks}"
+                                  SelectedItem="{Binding SelectedBook, Mode=TwoWay}"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserResizeColumns="True"
+                                  IsReadOnly="True"
+                                  Background="#252526"
+                                  Foreground="White"
+                                  RowBackground="#2D2D2D"
+                                  AlternatingRowBackground="#333337"
+                                  BorderThickness="1"
+                                  BorderBrush="#3F3F46"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True">
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#3E3E42"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="10,5"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID"
+                                                    Binding="{Binding Id}"
+                                                    Width="60"/>
+
+                                <DataGridTextColumn Header="Title"
+                                                    Binding="{Binding Title}"
+                                                    Width="2*"
+                                                    MinWidth="160"/>
+
+                                <DataGridTextColumn Header="Author"
+                                                    Binding="{Binding Author}"
+                                                    Width="2*"
+                                                    MinWidth="140"/>
+
+                                <DataGridTextColumn Header="Total"
+                                                    Binding="{Binding Quantity}"
+                                                    Width="80"/>
+
+                                <DataGridTextColumn Header="Available"
+                                                    Binding="{Binding AvailableQuantity}"
+                                                    Width="90"/>
+
+                                <DataGridTemplateColumn Header="Actions"
+                                                        Width="170">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Center">
+
+                                                <Button Content="SELECT"
+                                                        ToolTip="Select this book for rental and load its details"
+                                                        Width="75"
+                                                        Height="26"
+                                                        Margin="0,0,5,0"
+                                                        Background="#007ACC"
+                                                        Foreground="White"
+                                                        BorderThickness="0"
+                                                        FontWeight="Bold"
+                                                        Cursor="Hand"
+                                                        Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"/>
+
+                                                <Button Content="EDIT"
+                                                        ToolTip="Load this book into the edit form"
+                                                        Width="75"
+                                                        Height="26"
+                                                        Background="#F39C12"
+                                                        Foreground="White"
+                                                        BorderThickness="0"
+                                                        FontWeight="Bold"
+                                                        Cursor="Hand"
+                                                        Command="{Binding DataContext.EditBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"/>
+
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- ACTIVE RENTALS TAB -->
+                <TabItem Header="Active Rentals">
+                    <Grid Background="#1E1E1E" Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <DataGrid Grid.Row="0"
+                                  ItemsSource="{Binding ActiveRentals}"
+                                  SelectedItem="{Binding SelectedRental, Mode=TwoWay}"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserResizeColumns="True"
+                                  IsReadOnly="True"
+                                  Background="#252526"
+                                  Foreground="White"
+                                  RowBackground="#2D2D2D"
+                                  AlternatingRowBackground="#333337"
+                                  BorderThickness="1"
+                                  BorderBrush="#3F3F46"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True">
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#3E3E42"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="10,5"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID"
+                                                    Binding="{Binding Id}"
+                                                    Width="60"/>
+
+                                <DataGridTextColumn Header="Book"
+                                                    Binding="{Binding BookTitle}"
+                                                    Width="2*"
+                                                    MinWidth="180"/>
+
+                                <DataGridTextColumn Header="Member"
+                                                    Binding="{Binding MemberName}"
+                                                    Width="2*"
+                                                    MinWidth="160"/>
+
+                                <DataGridTextColumn Header="Student ID"
+                                                    Binding="{Binding StudentId}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Rental Date"
+                                                    Binding="{Binding RentalDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Due Date"
+                                                    Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                    Width="120"/>
+
+                                <DataGridTemplateColumn Header="Actions"
+                                                        Width="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="RETURN"
+                                                    Width="90"
+                                                    Height="26"
+                                                    Background="#2D7D46"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    FontWeight="Bold"
+                                                    Cursor="Hand"
+                                                    ToolTip="Return this rental"
+                                                    Command="{Binding DataContext.ReturnBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Button Grid.Row="1"
+                                Content="RETURN SELECTED RENTAL"
+                                Height="38"
+                                Width="220"
+                                Margin="0,12,0,0"
+                                HorizontalAlignment="Right"
+                                Background="#2D7D46"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Cursor="Hand"
+                                Command="{Binding ReturnBookCommand}"/>
+                    </Grid>
+                </TabItem>
+
+                <!-- RENTAL HISTORY TAB -->
+                <TabItem Header="Rental History">
+                    <Grid Background="#1E1E1E" Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0"
+                                Background="#252526"
+                                Padding="10"
+                                CornerRadius="5"
+                                Margin="0,0,0,15">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Rental history shows the latest 100 rentals for this library."
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"/>
+
+                                <Button Grid.Column="1"
+                                        Content="{Binding RentalHistoryButtonText}"
+                                        Width="170"
+                                        Height="30"
+                                        Background="#007ACC"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        Cursor="Hand"
+                                        Command="{Binding ViewRentalHistoryCommand}"/>
+                            </Grid>
+                        </Border>
+
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding RentalHistory}"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserResizeColumns="True"
+                                  IsReadOnly="True"
+                                  Background="#252526"
+                                  Foreground="White"
+                                  RowBackground="#2D2D2D"
+                                  AlternatingRowBackground="#333337"
+                                  BorderThickness="1"
+                                  BorderBrush="#3F3F46"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
+                                  SelectedItem="{Binding SelectedRental, Mode=TwoWay}">
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#3E3E42"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="10,5"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID"
+                                                    Binding="{Binding Id}"
+                                                    Width="60"/>
+
+                                <DataGridTextColumn Header="Book"
+                                                    Binding="{Binding BookTitle}"
+                                                    Width="2*"
+                                                    MinWidth="180"/>
+
+                                <DataGridTextColumn Header="Member"
+                                                    Binding="{Binding MemberName}"
+                                                    Width="2*"
+                                                    MinWidth="160"/>
+
+                                <DataGridTextColumn Header="Student ID"
+                                                    Binding="{Binding StudentId}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Rental Date"
+                                                    Binding="{Binding RentalDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Due Date"
+                                                    Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Return Date"
+                                                    Binding="{Binding ReturnDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                    Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- MEMBER OVERVIEW TAB -->
+                <TabItem Header="Member Overview">
+                    <Grid Background="#1E1E1E" Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- SEARCH MEMBER -->
+                        <Border Grid.Row="0"
+                                Background="#252526"
+                                Padding="10"
+                                CornerRadius="5"
+                                Margin="0,0,0,15">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="8"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Search member:"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+
+                                <TextBox Grid.Column="1"
+                                         Height="30"
+                                         Text="{Binding MemberOverviewSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="#333337"
+                                         Foreground="White"
+                                         BorderBrush="#3F3F46"
+                                         VerticalContentAlignment="Center"
+                                         Padding="5,0"
+                                         ToolTip="Search by name, email, phone or member code"/>
+
+                                <Button Grid.Column="3"
+                                        Content="SEARCH"
+                                        Width="90"
+                                        Height="30"
+                                        Background="#007ACC"
+                                        Foreground="White"
+                                        FontWeight="Bold"
+                                        Cursor="Hand"
+                                        Command="{Binding SearchMemberOverviewCommand}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- SEARCH RESULTS -->
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding MemberOverviewResults}"
+                                  SelectedItem="{Binding SelectedOverviewMember, Mode=TwoWay}"
+                                  SelectionMode="Single"
+                                  SelectionUnit="FullRow"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  IsReadOnly="True"
+                                  Height="140"
+                                  Background="#252526"
+                                  Foreground="White"
+                                  RowBackground="#2D2D2D"
+                                  AlternatingRowBackground="#333337"
+                                  BorderBrush="#3F3F46"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="None"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True"
+                                  Margin="0,0,0,15">
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Background" Value="#3E3E42"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="10,5"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#007ACC"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Full Name"
+                                                    Binding="{Binding FullName}"
+                                                    Width="2*"
+                                                    MinWidth="150"/>
+
+                                <DataGridTextColumn Header="Email"
+                                                    Binding="{Binding Email}"
+                                                    Width="2*"
+                                                    MinWidth="150"/>
+
+                                <DataGridTextColumn Header="Phone"
+                                                    Binding="{Binding Phone}"
+                                                    Width="120"/>
+
+                                <DataGridTextColumn Header="Member Code"
+                                                    Binding="{Binding StudentId}"
+                                                    Width="160"/>
+
+                                <DataGridTemplateColumn Header="Action"
+                                                        Width="90">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="VIEW"
+                                                    Width="70"
+                                                    Height="26"
+                                                    Background="#007ACC"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    FontWeight="Bold"
+                                                    Cursor="Hand"
+                                                    ToolTip="View this member's activity"
+                                                    Command="{Binding DataContext.ViewMemberOverviewCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- MEMBER DETAILS + SUMMARY -->
+                        <Border Grid.Row="2"
+                                Background="#252526"
+                                Padding="10"
+                                CornerRadius="5"
+                                Margin="0,0,0,15">
+
+                            <StackPanel>
+                                <TextBlock Text="Selected Member"
+                                           Foreground="#3498DB"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           Margin="0,0,0,8"/>
+
+                                <WrapPanel Margin="0,0,0,8">
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Name: "/>
+                                        <Run Text="{Binding SelectedOverviewMemberName, Mode=OneWay}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Email: "/>
+                                        <Run Text="{Binding SelectedOverviewMemberEmail, Mode=OneWay}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Phone: "/>
+                                        <Run Text="{Binding SelectedOverviewMemberPhone, Mode=OneWay}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Member Code: "/>
+                                        <Run Text="{Binding SelectedOverviewMemberCode, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </WrapPanel>
+
+                                <WrapPanel>
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Active rentals: "/>
+                                        <Run Text="{Binding SelectedMemberActiveRentalsCount, Mode=OneWay}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Overdue: "/>
+                                        <Run Text="{Binding SelectedMemberOverdueRentalsCount, Mode=OneWay}"/>
+                                    </TextBlock>
+
+                                    <TextBlock Foreground="White" Margin="0,0,25,5">
+                                        <Run Text="Total rentals: "/>
+                                        <Run Text="{Binding SelectedMemberTotalRentalsCount, Mode=OneWay}"/>
+                                    </TextBlock>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- MEMBER RENTALS -->
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- ACTIVE RENTALS FOR MEMBER -->
+                            <GroupBox Grid.Column="0"
+                                      Header="Active Rentals"
+                                      Foreground="White"
+                                      BorderBrush="#3F3F46">
+
+                                <DataGrid ItemsSource="{Binding SelectedMemberActiveRentals}"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          IsReadOnly="True"
+                                          Background="#252526"
+                                          Foreground="White"
+                                          RowBackground="#2D2D2D"
+                                          AlternatingRowBackground="#333337"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          EnableRowVirtualization="True"
+                                          EnableColumnVirtualization="True">
+
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#3E3E42"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Padding" Value="10,5"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Style>
+
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#007ACC"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.Resources>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Book"
+                                                            Binding="{Binding BookTitle}"
+                                                            Width="2*"
+                                                            MinWidth="150"/>
+
+                                        <DataGridTextColumn Header="Rental Date"
+                                                            Binding="{Binding RentalDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                            Width="110"/>
+
+                                        <DataGridTextColumn Header="Due Date"
+                                                            Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                            Width="110"/>
+
+                                        <DataGridTemplateColumn Header="Action"
+                                                                Width="90">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="RETURN"
+                                                            Width="75"
+                                                            Height="26"
+                                                            Background="#2D7D46"
+                                                            Foreground="White"
+                                                            BorderThickness="0"
+                                                            FontWeight="Bold"
+                                                            Cursor="Hand"
+                                                            ToolTip="Return this rental"
+                                                            Command="{Binding DataContext.ReturnBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"/>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </GroupBox>
+
+                            <!-- HISTORY FOR MEMBER -->
+                            <GroupBox Grid.Column="2"
+                                      Header="Rental History"
+                                      Foreground="White"
+                                      BorderBrush="#3F3F46">
+
+                                <DataGrid ItemsSource="{Binding SelectedMemberRentalHistory}"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          IsReadOnly="True"
+                                          Background="#252526"
+                                          Foreground="White"
+                                          RowBackground="#2D2D2D"
+                                          AlternatingRowBackground="#333337"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          EnableRowVirtualization="True"
+                                          EnableColumnVirtualization="True">
+
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#3E3E42"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Padding" Value="10,5"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Style>
+
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderBrush" Value="#3F3F46"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#007ACC"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.Resources>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Book"
+                                                            Binding="{Binding BookTitle}"
+                                                            Width="2*"
+                                                            MinWidth="150"/>
+
+                                        <DataGridTextColumn Header="Rental Date"
+                                                            Binding="{Binding RentalDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                            Width="110"/>
+
+                                        <DataGridTextColumn Header="Due Date"
+                                                            Binding="{Binding DueDate, StringFormat={}{0:dd.MM.yyyy}}"
+                                                            Width="110"/>
+
+                                        <DataGridTextColumn Header="Return Date"
+                                                            Binding="{Binding ReturnDate, StringFormat={}{0:dd.MM.yyyy}, TargetNullValue=Active}"
+                                                            Width="110"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </GroupBox>
+                        </Grid>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+
+            <!-- STATUS MESSAGE -->
+            <Border Grid.Row="3"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5"
+                    Margin="0,15,0,0">
+
+                <StackPanel>
+                    <TextBlock Text="{Binding BookStatusMessage, Mode=OneWay}"
+                               Foreground="White"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,4"/>
+
+                    <TextBlock Text="{Binding RentalStatusMessage, Mode=OneWay}"
+                               Foreground="#BFBFBF"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>
