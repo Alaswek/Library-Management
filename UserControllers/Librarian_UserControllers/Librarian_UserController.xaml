@@ -3,317 +3,360 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:LibraryManagement.UserControllers.Librarian_UserControllers"
              mc:Ignorable="d"
              d:DesignHeight="700"
-             d:DesignWidth="1100">
+             d:DesignWidth="1200"
+             Background="#1E1E1E">
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+	<Grid Margin="15">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="350"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0"
-                Background="#2C3E50"
-                Padding="10"
+		<!-- Left Panel - Book Management -->
+		<Border Grid.Column="0"
+                Background="#252526"
                 CornerRadius="5"
-                Margin="0,0,0,10">
+                Padding="15"
+                Margin="0,0,15,0">
 
-            <TextBlock Text="{Binding WelcomeMessage}"
-                       Foreground="White"
-                       FontSize="18"
-                       FontWeight="Bold"/>
-        </Border>
+			<StackPanel>
+				<TextBlock Text="BOOK MANAGEMENT"
+                           Foreground="#3498DB"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Margin="0,0,0,20"
+                           HorizontalAlignment="Center"/>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="450"/>
-            </Grid.ColumnDefinitions>
+				<TextBlock Text="SELECTED BOOK"
+                           Foreground="White"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,15"
+                           HorizontalAlignment="Center"/>
 
-            <Grid Grid.Column="0" Margin="0,0,10,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Text="{Binding BookStatusMessage}"
-                           Foreground="Gray"
-                           Margin="0,0,0,5"/>
-
-                <Border Grid.Row="1"
-                        Background="#ECF0F1"
+				<Border Background="#333337"
                         Padding="10"
                         CornerRadius="5"
-                        Margin="0,0,0,10">
+                        Margin="0,0,0,15">
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+					<StackPanel>
+						<TextBlock Text="Title:"
+                                   Foreground="#888888"
+                                   FontSize="11"/>
 
-                        <TextBlock Grid.Column="0"
-                                   Text="Category:"
-                                   VerticalAlignment="Center"
-                                   Margin="5"/>
-
-                        <ComboBox Grid.Column="1"
-                                  ItemsSource="{Binding Categories}"
-                                  SelectedItem="{Binding SelectedCategory}"
-                                  Margin="5"/>
-
-                        <TextBlock Grid.Column="2"
-                                   Text="Search:"
-                                   VerticalAlignment="Center"
-                                   Margin="5"/>
-
-                        <TextBox Grid.Column="3"
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="5"
-                                 ToolTip="Search by title or author"/>
-                    </Grid>
-                </Border>
-
-                <DataGrid Grid.Row="2"
-                          ItemsSource="{Binding FilteredBooks}"
-                          AutoGenerateColumns="False"
-                          SelectionMode="Single"
-                          SelectedItem="{Binding SelectedBook}"
-                          CanUserAddRows="False"
-                          IsReadOnly="True"
-                          AlternatingRowBackground="#F9F9F9"
-                          RowHeight="35">
-
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID"
-                                            Binding="{Binding Id}"
-                                            Width="50"/>
-
-                        <DataGridTextColumn Header="Title"
-                                            Binding="{Binding Title}"
-                                            Width="200"/>
-
-                        <DataGridTextColumn Header="Author"
-                                            Binding="{Binding Author}"
-                                            Width="150"/>
-
-                        <DataGridTextColumn Header="Library"
-                                            Binding="{Binding Library.Name}"
-                                            Width="120"/>
-
-                        <DataGridTextColumn Header="Total"
-                                            Binding="{Binding Quantity}"
-                                            Width="60"/>
-
-                        <DataGridTextColumn Header="Available"
-                                            Binding="{Binding AvailableQuantity}"
-                                            Width="80"/>
-
-                        <DataGridTemplateColumn Header="Delete" Width="70">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button Content="Delete"
-                                            Command="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            Background="#E74C3C"
-                                            Foreground="White"
-                                            Height="28"
-                                            Width="65"
-                                            Cursor="Hand"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Text="{Binding RentalStatusMessage}"
-                           Foreground="Gray"
-                           Margin="0,0,0,5"/>
-
-                <Border Grid.Row="1"
-                        Background="#3498DB"
-                        Padding="10"
-                        CornerRadius="5"
-                        Margin="0,0,0,10">
-
-                    <StackPanel>
-                        <TextBlock Text="RENT A BOOK"
+						<TextBlock Text="{Binding SelectedBook.Title, FallbackValue='No book selected'}"
                                    Foreground="White"
-                                   FontSize="14"
                                    FontWeight="Bold"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,10"/>
+                                   TextWrapping="Wrap"
+                                   Margin="0,2,0,10"/>
 
-                        <Border Background="White"
-                                Padding="10"
-                                CornerRadius="5"
-                                Margin="0,0,0,10">
+						<TextBlock Text="Author:"
+                                   Foreground="#888888"
+                                   FontSize="11"/>
 
-                            <StackPanel>
-                                <TextBlock Text="Selected Book:"
+						<TextBlock Text="{Binding SelectedBook.Author, FallbackValue='-'}"
+                                   Foreground="White"
+                                   Margin="0,2,0,10"/>
+
+						<Grid Margin="0,5,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<StackPanel Grid.Column="0">
+								<TextBlock Text="Total copies:"
+                                           Foreground="#888888"
+                                           FontSize="11"/>
+								<TextBlock Text="{Binding SelectedBook.Quantity, FallbackValue='0'}"
+                                           Foreground="White"
                                            FontWeight="Bold"/>
+							</StackPanel>
 
-                                <TextBlock Margin="0,5,0,10">
-                                    <TextBlock.Text>
-                                        <Binding Path="SelectedBook.Title"
-                                                 FallbackValue="No book selected"/>
-                                    </TextBlock.Text>
-                                </TextBlock>
-
-                                <TextBlock Text="Available Copies:"
+							<StackPanel Grid.Column="1">
+								<TextBlock Text="Available:"
+                                           Foreground="#888888"
+                                           FontSize="11"/>
+								<TextBlock Text="{Binding SelectedBook.AvailableQuantity, FallbackValue='0'}"
+                                           Foreground="#27AE60"
                                            FontWeight="Bold"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>
 
-                                <TextBlock Margin="0,5,0,10">
-                                    <TextBlock.Text>
-                                        <Binding Path="SelectedBook.AvailableQuantity"
-                                                 FallbackValue="0"/>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </StackPanel>
-                        </Border>
+				<Button Content="ADD NEW BOOK"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Background="#2D7D46"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding AddBookCommand}"/>
 
-                        <Border Background="White"
-                                Padding="10"
-                                CornerRadius="5"
-                                Margin="0,0,0,10">
+				<Button Content="EDIT SELECTED BOOK"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Background="#F39C12"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding EditBookCommand}"/>
 
-                            <StackPanel>
-                                <TextBlock Text="Select Member:"
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,5"/>
+				<Button Content="DELETE SELECTED BOOK"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Background="#C42B1C"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding DeleteBookCommand}"/>
 
-                                <ComboBox ItemsSource="{Binding Members}"
-                                          DisplayMemberPath="FullName"
-                                          SelectedItem="{Binding SelectedMember}"
-                                          Margin="0,0,0,10"/>
+				<Separator Margin="0,20,0,15"/>
 
-                                <TextBlock Text="Due Date:"
-                                           FontWeight="Bold"
-                                           Margin="0,0,0,5"/>
+				<TextBlock Text="RENT BOOK"
+                           Foreground="#3498DB"
+                           FontSize="14"
+                           FontWeight="Bold"
+                           Margin="0,0,0,15"
+                           HorizontalAlignment="Center"/>
 
-                                <DatePicker SelectedDate="{Binding RentalDueDate}"
-                                            Margin="0,0,0,10"/>
+				<TextBlock Text="Select Member:"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
 
-                                <Button Content="RENT BOOK"
-                                        Command="{Binding RentBookCommand}"
-                                        Background="#27AE60"
+				<ComboBox Height="30"
+                          ItemsSource="{Binding Members}"
+                          DisplayMemberPath="FullName"
+                          SelectedItem="{Binding SelectedMember}"
+                          Background="#333337"
+                          Foreground="White"
+                          BorderBrush="#3F3F46"
+                          VerticalContentAlignment="Center"
+                          Padding="5,0"
+                          Margin="0,0,0,15"/>
+
+				<TextBlock Text="Due Date:"
+                           Foreground="White"
+                           Margin="0,0,0,5"/>
+
+				<DatePicker SelectedDate="{Binding RentalDueDate}"
+                            Height="30"
+                            Background="#333337"
+                            Foreground="White"
+                            BorderBrush="#3F3F46"
+                            VerticalContentAlignment="Center"
+                            Margin="0,0,0,15"/>
+
+				<Button Content="RENT BOOK"
+                        Height="40"
+                        Background="#2D7D46"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding RentBookCommand}"/>
+
+				<Separator Margin="0,20,0,15"/>
+
+				<Button Content="REFRESH DATA"
+                        Height="35"
+                        Margin="0,0,0,10"
+                        Background="#007ACC"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        Command="{Binding RefreshDataCommand}"/>
+			</StackPanel>
+		</Border>
+
+		<!-- Right Panel - Books and Rentals -->
+		<Grid Grid.Column="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<!-- Welcome Banner -->
+			<Border Grid.Row="0"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5"
+                    Margin="0,0,0,15">
+
+				<TextBlock Text="{Binding WelcomeMessage}"
+                           Foreground="White"
+                           FontSize="14"
+                           FontWeight="Bold"/>
+			</Border>
+
+			<!-- Search and Filter Bar -->
+			<Border Grid.Row="1"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5"
+                    Margin="0,0,0,15">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="150"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Grid.Column="0"
+                               Text="Category:"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+
+					<ComboBox Grid.Column="1"
+                              Height="30"
+                              ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              Background="#333337"
+                              Foreground="White"
+                              BorderBrush="#3F3F46"
+                              VerticalContentAlignment="Center"
+                              Padding="5,0"/>
+
+					<TextBlock Grid.Column="2"
+                               Text="Search:"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               Margin="15,0,8,0"/>
+
+					<TextBox Grid.Column="3"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30"
+                             Background="#333337"
+                             Foreground="White"
+                             BorderBrush="#3F3F46"
+                             VerticalContentAlignment="Center"
+                             Padding="5,0"
+                             ToolTip="Search by title or author"/>
+				</Grid>
+			</Border>
+
+			<!-- Statistics Bar -->
+			<Border Grid.Row="2"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5"
+                    Margin="0,0,0,15">
+
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Foreground="White" Margin="0,0,25,0">
+						<Run Text="Total Books: "/>
+						<Run Text="{Binding TotalBooks, Mode=OneWay}"/>
+					</TextBlock>
+
+					<TextBlock Foreground="White" Margin="0,0,25,0">
+						<Run Text="Available: "/>
+						<Run Text="{Binding AvailableBooksCount, Mode=OneWay}"/>
+					</TextBlock>
+
+					<TextBlock Foreground="White" Margin="0,0,25,0">
+						<Run Text="Active Rentals: "/>
+						<Run Text="{Binding ActiveRentalsCount, Mode=OneWay}"/>
+					</TextBlock>
+
+					<TextBlock Foreground="White">
+						<Run Text="Status: "/>
+						<Run Text="{Binding BookStatusMessage, Mode=OneWay}"/>
+					</TextBlock>
+				</StackPanel>
+			</Border>
+
+			<!-- Books DataGrid -->
+			<DataGrid Grid.Row="3"
+                      ItemsSource="{Binding FilteredBooks}"
+                      SelectedItem="{Binding SelectedBook}"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      IsReadOnly="True"
+                      Background="#252526"
+                      Foreground="Black"
+                      RowBackground="#2D2D2D"
+                      AlternatingRowBackground="#333337"
+                      BorderThickness="1"
+                      BorderBrush="#3F3F46"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="None"
+                      Margin="0,0,0,15">
+
+				<DataGrid.Resources>
+					<Style TargetType="DataGridColumnHeader">
+						<Setter Property="Background" Value="#3E3E42"/>
+						<Setter Property="Foreground" Value="White"/>
+						<Setter Property="Padding" Value="10,5"/>
+						<Setter Property="FontWeight" Value="Bold"/>
+					</Style>
+
+					<Style TargetType="DataGridCell">
+						<Setter Property="Foreground" Value="White"/>
+						<Setter Property="Background" Value="Transparent"/>
+						<Setter Property="BorderBrush" Value="#3F3F46"/>
+					</Style>
+				</DataGrid.Resources>
+
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="ID"
+                                        Binding="{Binding Id}"
+                                        Width="60"/>
+
+					<DataGridTextColumn Header="Title"
+                                        Binding="{Binding Title}"
+                                        Width="200"/>
+
+					<DataGridTextColumn Header="Author"
+                                        Binding="{Binding Author}"
+                                        Width="180"/>
+
+					<DataGridTextColumn Header="Total"
+                                        Binding="{Binding Quantity}"
+                                        Width="70"/>
+
+					<DataGridTextColumn Header="Available"
+                                        Binding="{Binding AvailableQuantity}"
+                                        Width="80"/>
+
+					<DataGridTemplateColumn Header="Delete" Width="80">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Content="Delete"
+                                        Command="{Binding DataContext.DeleteBookCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Background="#C42B1C"
                                         Foreground="White"
-                                        Padding="10"
-                                        FontWeight="Bold"
-                                        Cursor="Hand"/>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                </Border>
+                                        BorderThickness="0"
+                                        Padding="8,3"
+                                        Cursor="Hand"
+                                        FontSize="11"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
 
-                <Border Grid.Row="2"
-                        Background="#2C3E50"
-                        Padding="10"
-                        CornerRadius="5">
+			<!-- Status Message Bar -->
+			<Border Grid.Row="4"
+                    Background="#252526"
+                    Padding="10"
+                    CornerRadius="5">
 
-                    <StackPanel>
-                        <TextBlock Text="ACTIVE RENTALS"
-                                   Foreground="White"
-                                   FontSize="14"
-                                   FontWeight="Bold"
-                                   Margin="0,0,0,10"/>
-
-                        <TextBlock Foreground="#BDC3C7"
-                                   Margin="0,0,0,10">
-                            <TextBlock.Text>
-                                <Binding Path="ActiveRentalsCount"
-                                         StringFormat="Total: {0} rentals"/>
-                            </TextBlock.Text>
-                        </TextBlock>
-
-                        <ListBox ItemsSource="{Binding ActiveRentals}"
-                                 SelectedItem="{Binding SelectedRental}"
-                                 Height="200">
-
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="#34495E"
-                                            Margin="0,2"
-                                            Padding="8"
-                                            CornerRadius="3">
-
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <StackPanel Grid.Column="0">
-                                                <TextBlock Text="{Binding BookTitle}"
-                                                           Foreground="White"
-                                                           FontWeight="Bold"/>
-
-                                                <TextBlock Text="{Binding MemberName}"
-                                                           Foreground="#BDC3C7"
-                                                           FontSize="11"/>
-
-                                                <TextBlock Foreground="#BDC3C7"
-                                                           FontSize="10">
-                                                    <Run Text="Due:"/>
-
-                                                    <Run>
-                                                        <Run.Text>
-                                                            <Binding Path="DueDate"
-                                                                     StringFormat="{}{0:MM/dd/yyyy}"/>
-                                                        </Run.Text>
-                                                    </Run>
-
-                                                    <Run Text=" - "/>
-
-                                                    <Run Text="{Binding Status}"/>
-                                                </TextBlock>
-                                            </StackPanel>
-
-                                            <Button Grid.Column="1"
-                                                    Content="Return"
-                                                    Command="{Binding DataContext.ReturnBookCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Background="#E67E22"
-                                                    Foreground="White"
-                                                    Padding="8,3"
-                                                    Cursor="Hand"
-                                                    Margin="10,0,0,0"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Grid>
-
-        <Border Grid.Row="2"
-                Margin="0,10,0,0"
-                HorizontalAlignment="Right">
-
-            <Button Content="Refresh Data"
-                    Command="{Binding RefreshDataCommand}"
-                    Background="#3498DB"
-                    Foreground="White"
-                    Padding="10,5"
-                    Cursor="Hand"/>
-        </Border>
-    </Grid>
+				<TextBlock Text="{Binding RentalStatusMessage, Mode=OneWay}"
+                           Foreground="White"
+                           FontWeight="Bold"
+                           TextWrapping="Wrap"/>
+			</Border>
+		</Grid>
+	</Grid>
 </UserControl>
