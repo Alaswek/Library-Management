@@ -98,6 +98,14 @@
     <Compile Include="Models\Model_User.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\AdminLibraryBooksService.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\IAdminLibraryBooksService.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\Requests\RentBookRequest.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\Requests\ReturnBookRequest.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\Requests\SaveBookRequest.cs" />
+    <Compile Include="Services\Admin\LibraryBooks\Results\ServiceResult.cs" />
+    <Compile Include="Services\Common\DialogService.cs" />
+    <Compile Include="Services\Common\IDialogService.cs" />
     <Compile Include="UserControllers\Admin_UserControllers\Administrator_UserManagement.xaml.cs">
       <DependentUpon>Administrator_UserManagement.xaml</DependentUpon>
     </Compile>
